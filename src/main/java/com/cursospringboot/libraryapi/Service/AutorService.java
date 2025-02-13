@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cursospringboot.libraryapi.DTO.AutorDTO;
+import com.cursospringboot.libraryapi.Exception.RegistroDuplicadoException;
 import com.cursospringboot.libraryapi.Model.Autor;
 import com.cursospringboot.libraryapi.Repository.AutorRepository;
 import com.cursospringboot.libraryapi.Validator.AutorValidator;
@@ -22,15 +23,14 @@ public class AutorService {
 
     //listar
     public Autor adicionar(Autor autor) {
-        Autor autorfalho = new Autor();
         try {
             if(!autorValidator.JaExisteAutor(autor)) {
             return autorRepository.save(autor);
             }
-            return autorfalho;
+            throw new RegistroDuplicadoException("Autor já cadastrado!");
         } catch (Exception erro) {
             System.out.println("Erro: " + erro.getMessage());
-            return autorfalho;
+            throw new RegistroDuplicadoException("Autor já cadastrado!");
         }
     }
     //remover
@@ -89,6 +89,5 @@ public class AutorService {
             return List.of();
         }
     }
-
 }
 

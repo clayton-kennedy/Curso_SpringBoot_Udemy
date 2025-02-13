@@ -6,6 +6,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,6 +28,7 @@ public class LivroController {
     AutorService autorService;
 
     //listar
+    @PostMapping
     public Livro adicionar(Livro livro) {
         try {
             return livroService.adicionar(livro);
@@ -34,6 +39,7 @@ public class LivroController {
     }
 
     //remover
+    @DeleteMapping
     public String remover(UUID id) {
         try {
             livroService.remover(id);
@@ -45,6 +51,7 @@ public class LivroController {
     }
 
     //atualizar
+    @PutMapping
     public Livro atualizar(Livro livro) {
         try {
             return livroService.atualizar(livro);
@@ -55,6 +62,7 @@ public class LivroController {
     }
 
     //buscar um
+    @GetMapping("/{id}")
     public Optional<Livro> buscarPeloId(UUID id) {
         try {
             return livroService.buscarPeloId(id);
@@ -65,6 +73,7 @@ public class LivroController {
     }
 
     //buscar todos
+    @GetMapping
     public List<Livro> buscarTodos() {
         try {
             return livroService.buscarTodos();
@@ -76,6 +85,7 @@ public class LivroController {
     }
 
     //buscar livro e autor
+    @GetMapping("/buscarLivroEAutor")
     public List<?> buscarLivroAutor(UUID idLivro, UUID idAutor) {
         Optional<Livro> livro = livroService.buscarPeloId(idLivro);
         Optional<Autor> autor = autorService.buscarPeloId(idAutor);

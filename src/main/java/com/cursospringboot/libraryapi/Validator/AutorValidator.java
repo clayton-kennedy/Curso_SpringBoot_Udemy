@@ -19,22 +19,13 @@ public class AutorValidator {
     }
 
     public Boolean JaExisteAutor(Autor autor) {
-        if(autorRepository.existsById(autor.getId())){
-            return true;
-        }
-        return false;
+        return !autorRepository.findByNomeAndNacionalidade(autor.getNome(), autor.getNacionalidade()).isEmpty();
     }
     public Boolean JaExisteAutor(UUID id) {
-        if(autorRepository.existsById(id)){
-            return true;
-        }
-        return false;
+        return autorRepository.existsById(id);
     }
     public Boolean JaExisteAutor(AutorDTO autorDTO) {
-        if(autorRepository.existsById(autorDTO.id())){
-            return true;
-        }
-        return false;
+        return autorRepository.existsById(autorDTO.id());
     }
     public Autor validarParaAtualizarAutor(AutorDTO dto) {
         return autorRepository.findById(dto.id()).map(autor -> {

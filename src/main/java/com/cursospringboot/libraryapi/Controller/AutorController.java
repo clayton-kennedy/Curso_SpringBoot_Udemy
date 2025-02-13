@@ -31,14 +31,14 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("/autores")
+@RequestMapping("/autor")
 public class AutorController {
     @Autowired
     AutorService autorService;
     
     //adicionar
     @PostMapping
-    public ResponseEntity<?> adicionar(@RequestBody @Valid Autor autor) {
+    public ResponseEntity<?> adicionar(@RequestBody Autor autor) {
         try {
             Autor autorSalvo = autorService.adicionar(autor);          
             URI linkAutor = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -57,10 +57,10 @@ public class AutorController {
     }    
     //remover
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> remover(@PathVariable @Valid UUID id) {
+    public ResponseEntity<?> remover(@PathVariable UUID id) {
         try {
             autorService.remover(id);
-            return ResponseEntity.status(CREATED).body("Autor "+ id + "removido com sucesso!");
+            return ResponseEntity.status(CREATED).body("Autor "+ id + " removido com sucesso!");
         } catch (Exception erro) {
             return ResponseEntity.status(BAD_REQUEST).body(erro.getMessage());
         }
@@ -83,7 +83,7 @@ public class AutorController {
     
     //buscar um
     @GetMapping("/{id}")
-    public ResponseEntity<?> buscarPeloId(UUID id) {
+    public ResponseEntity<?> buscarPeloId(@PathVariable UUID id) {
         try {
             Optional<Autor> autorEncontrado = autorService.buscarPeloId(id);
             AutorDTO autorDTO = new AutorDTO(autorEncontrado.get().getId() ,autorEncontrado.get().getNome(), autorEncontrado.get().getDataNascimento(), autorEncontrado.get().getNacionalidade());
@@ -106,7 +106,7 @@ public class AutorController {
         }
     }
     //buscar pelo nome e nacionalidade
-    @GetMapping
+    @GetMapping("/buscarNomeNacionalidade")
     public ResponseEntity<List<AutorDTO>> buscarNomeNacionalidade(
         @RequestParam(value="nome", required = false) String nome, 
         @RequestParam(value = "nacionalidade", required = false) String nacionalidade) {
