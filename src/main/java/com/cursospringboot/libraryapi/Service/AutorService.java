@@ -6,33 +6,37 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cursospringboot.libraryapi.DTO.AutorDTO;
 import com.cursospringboot.libraryapi.Model.Autor;
 import com.cursospringboot.libraryapi.Repository.AutorRepository;
+import com.cursospringboot.libraryapi.Validator.AutorValidator;
 
 @Service
 public class AutorService {
     @Autowired
     AutorRepository autorRepository;
+    @Autowired
+    AutorValidator autorValidator;
 
     //listar
     public Autor adicionar(Autor autor) {
+        Autor autorfalho = new Autor();
         try {
+            if(!autorValidator.JaExisteAutor(autor)) {
             return autorRepository.save(autor);
+            }
+            return autorfalho;
         } catch (Exception erro) {
             System.out.println("Erro: " + erro.getMessage());
-            return autor;
+            return autorfalho;
         }
     }
     //remover
     public String remover(UUID id) {
         try {
-            if (autorRepository.existsById(id)) {
+            if (autorValidator.JaExisteAutor(id)) {
                 autorRepository.deleteById(id);
                 return "Autor removido com sucesso!";
             }
@@ -43,14 +47,14 @@ public class AutorService {
         }
     }
     //atualizar
-    public void atualizar(Autor autor) {
+    public Autor atualizar(AutorDTO autorDTO) {
+        Autor autorfalho = new Autor();
         try {
-            Optional<Autor> autorEncontrado = buscarPeloId(autor.getId());
-            if (autorEncontrado.isPresent()) {
-                autorRepository.save(autor);
-            }
-        } catch (Exception erro) {  
+                Autor autor = autorValidator.validarParaAtualizarAutor(autorDTO);
+                return autorRepository.save(autor);
+        } catch (Exception erro) {
             System.out.println("Erro: " + erro.getMessage());
+            return autorfalho;
         }
     }
     //buscar um

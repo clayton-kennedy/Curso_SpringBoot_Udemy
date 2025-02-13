@@ -82,8 +82,11 @@ return ResponseEntity.created(location).build();
 - Criar alguns metodos dentro do ErroResposta:
 respostaPadrao, conflito e outras se quiser
 - Adicionar a classe ErroResposta como parametro de saida dos controllers
-- Criar a pasta Exception e 
-- Criar uma nova pasta com uma classe e metodos para validar as informaçoes para o service
+- Criar a pasta Exception e a classe RegistroDuplicadoException e que herde e RunTimeException
+- Criar um construtor para utilizar um super da runtime com uma mensage
+- Criar uma pasta Validator com um classe AutorValidator, adicionar @Component e injetar dependencia do AutorRepository
+- Criar lógicas de validação
+- 
 - Criar uma exception handler para os erros
 - Criar também uma API para os livros com bean validation
 - Adicionar dependencia do starter-validation no pom:
