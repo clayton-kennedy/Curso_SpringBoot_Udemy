@@ -1,0 +1,93 @@
+package com.cursospringboot.libraryapi.Controller;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.cursospringboot.libraryapi.Model.Autor;
+import com.cursospringboot.libraryapi.Model.Livro;
+import com.cursospringboot.libraryapi.Service.AutorService;
+import com.cursospringboot.libraryapi.Service.LivroService;
+
+@RestController
+@RequestMapping("/livros")
+public class LivroController {
+
+    @Autowired
+    LivroService livroService;
+    @Autowired
+    AutorService autorService;
+
+    //listar
+    public Livro adicionar(Livro livro) {
+        try {
+            return livroService.adicionar(livro);
+        } catch (Exception erro) {
+            System.out.println("Erro: " + erro.getMessage());
+            return livro;
+        }
+    }
+
+    //remover
+    public String remover(UUID id) {
+        try {
+            livroService.remover(id);
+            return "Livro removido com sucesso!";
+        } catch (Exception erro) {
+            System.out.println("Erro: " + erro.getMessage());
+            return "Não foi possível remover o livro.";
+        }
+    }
+
+    //atualizar
+    public Livro atualizar(Livro livro) {
+        try {
+            return livroService.atualizar(livro);
+        } catch (Exception erro) {
+            System.out.println("Erro: " + erro.getMessage());
+            return livro;
+        }
+    }
+
+    //buscar um
+    public Optional<Livro> buscarPeloId(UUID id) {
+        try {
+            return livroService.buscarPeloId(id);
+        } catch (Exception erro) {
+            System.out.println("Erro: " + erro.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    //buscar todos
+    public List<Livro> buscarTodos() {
+        try {
+            return livroService.buscarTodos();
+        } catch (Exception erro) {
+            System.out.println("Erro: " + erro.getMessage());
+            List<Livro> livros = new ArrayList<>();
+            return livros;
+        }
+    }
+
+    //buscar livro e autor
+    public List<?> buscarLivroAutor(UUID idLivro, UUID idAutor) {
+        Optional<Livro> livro = livroService.buscarPeloId(idLivro);
+        Optional<Autor> autor = autorService.buscarPeloId(idAutor);
+        List op = new ArrayList<>();
+
+        if (livro.isPresent() && autor.isPresent()) {
+            op.add(livro.get());
+            op.add(autor.get());
+            return op;
+        } else {
+            return op;
+        }
+    }
+}
+

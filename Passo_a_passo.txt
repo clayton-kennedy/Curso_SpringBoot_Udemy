@@ -1,0 +1,99 @@
+
+- Criar a aplicação no spring initializr
+com as dependencias: postgres driver, spring web, spring dev tools, spring data jpa, lombok, spring security
+- Abrir o terminal na pasta da aplicação e enviar o comando: mvn clean install -DskipTests
+esse comando faz o build do projeto sem o test 
+- Criar network: docker network create library-network
+- Criar um volume docker: docker volume create library-network
+- Criar o container do postgres apontando para network: docker run --name librarydb -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=library --network library-network --volume library-network postgres:latest
+- Criar o container apontando para network: docker run --name pgadmin4 -p 15432:80 -e PGADMIN_DEFAULT_EMAIL=admin@admin.com -e PGADMIN_DEFAULT_PASSWORD=admin --network library-network dpage/pgadmin4:latest
+- Abrir a pagina do pgadmin: localhost:15432/browser
+- Criar um novo banco de dados
+	Name: librarydb
+	Host name: localhost
+	port: 5432 (mesma porta do comando para criar o container do postgres)
+	maintenance database: library
+	username: postgres
+	password: postgres
+- Configurar conexao com banco de dados:
+	Abrir application.properties, renomerar para application.yml e refatorar.
+spring:
+	application:
+		name: libraryapi
+	datasource:
+		url: jdbc:postgres://localhost:5432/library
+		username: postgres
+		password: postgres
+		driver-class-name: org.postgresql.Driver
+	Jpa:
+		hibernate:
+			show-sql: true
+			ddl-auto: update
+
+- Criar pasta Model, e a classe Autor.java com:
+@Entity @Data @EntityListeners(AuditingEntityListener.class) 
+Com o @NotBlank ou @NotNull também
+Na data de nascimento, adicionar o @Future para não aceitar data futura
+UUID id, nome, data nascimento, nacionalidade, @CreatedDate data cadastro, @LastModifiedDate data atualizaçao, UUID id_usuario
+
+- Criar a entidade Livro com:
+@Entity @Data @EntityListeners(AuditingEntityListener.class) 
+Com o @NotBlank ou @NotNull também
+Com @ISBN também
+Na data de publicacao adicionar o @Past para não aceitar data passada
+UUID id, isbn, titulo, data publicacao, genero, preco, id_autor, UUID id_usuario
+
+- Ir a classe application (main) e adicionar a annotation:
+@EnableJpaAuditing
+- Criar enum GeneroLivro (FICCAO, FANTASIA, MISTERIOS, ROMANCE, BIOGRAFIA, CIENCIA, TERROR)
+- Criar repository para cada entidade
+- Criar services
+- Criar metodos para listar e mostrar o livro e o autor juntos
+- Metodos para barra de pesquisa: 
+ex: List<Livro> findByFirstNameContaining(String titulo);
+ou com o @Query('Codigo sql')
+- Criar o controller para cada entidade
+: AutorController
+	@RestController
+	@RequestMapping("/autores")
+: LivrosController
+	@RestController
+	@RequestMapping("/livros")
+- No package controller, criar um Record: AutorDTO
+public record AutorDTO (String nome, LocalDate dataNascimento, String nacionalidade) {}
+- Criar métodos CRUD no controller com return tipo ResponseEntity e com parametros do tipo AutorDTO
+- No AutorDTO, criar um metodo para mapearAutor, que vai instanciar um autor e atribuir os dados 
+recebidos no AutorDTO para o autor e depois no service, fazer o repository salvar esse objeto que retorna do DTO
+- Ao cadastrar, gerar o link de visualizaçao para cada novo registro:
+URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(autorEntidade.getId()).toUri();
+return ResponseEntity.created(location).build();
+- No autorcontroller, criar um metodo que recebe nome e/ou nacionalidade para pesquisar
+- No AutorService, criar um metodo para pesquisa obtendo nome e nacionalidade, para isso é
+necessario criar metodos no repository
+
+- Criar uma nova pasta com uma classe e metodos para validar as informaçoes para o service
+- Criar uma exception handler para os erros
+- Criar também uma API para os livros com bean validation
+- Adicionar dependencia do starter-validation no pom:
+<dependency><groupId>org.springramework.boot</groupId>
+<artefactId>spring-boot-starter-validation</artefactId></dependency>
+- mvn clean install -DskipTests
+- No autorDTO adicionar @NotBlank(message = "O campo nome é obrigatório") para o atributo nome, @NotNull para o dataNascimento, @NotBlank para o nacionalidade
+- No autorController, no parametro do metodo, adicionar @Valid depois do @RequestBody e antes dos parametros
+- 
+- 
+- 
+- 
+- 
+- 
+- Adicionar o properties do mapstruct no maven
+- Adicionar a dependencia do mapstruct no maven
+- Adicionar o plugin do mapstruct no maven
+- Adicionar o path do lombok junto ao do mapstruct no maven (em annotationprocessorpaths)
+- Criar novo package chamado mappers, e criar uma interface chamada AutorMapper
+com @Mapper(componentModel = "spring")
+
+- 
+- 
+- 
+- 
