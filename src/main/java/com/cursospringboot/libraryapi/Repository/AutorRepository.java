@@ -11,8 +11,8 @@ import java.util.List;
 @Repository
 public interface  AutorRepository extends JpaRepository<Autor, UUID> {
 
-    List<Autor> buscarNome(String nome);
-    List<Autor> buscarNacionalidade(String nacionalidade);
-    List<Autor> buscarNomeNacionalidade(String nome, String nacionalidade);
+    List<Autor> findByNome(String nome);
+    List<Autor> findByNacionalidade(String nacionalidade);
+    List<Autor> findByNomeAndNacionalidade(String nome, String nacionalidade);
 }
 

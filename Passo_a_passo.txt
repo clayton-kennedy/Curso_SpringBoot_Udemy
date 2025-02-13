@@ -1,3 +1,11 @@
+* mvc
+* dto
+* responseentity
+* bean authenticator
+* 
+*
+*
+*
 
 - Criar a aplicação no spring initializr
 com as dependencias: postgres driver, spring web, spring dev tools, spring data jpa, lombok, spring security
@@ -59,7 +67,7 @@ ou com o @Query('Codigo sql')
 : LivrosController
 	@RestController
 	@RequestMapping("/livros")
-- No package controller, criar um Record: AutorDTO
+- No package controller, criar uma pasta chamada dto e um Record: AutorDTO
 public record AutorDTO (String nome, LocalDate dataNascimento, String nacionalidade) {}
 - Criar métodos CRUD no controller com return tipo ResponseEntity e com parametros do tipo AutorDTO
 - No AutorDTO, criar um metodo para mapearAutor, que vai instanciar um autor e atribuir os dados 
@@ -68,9 +76,13 @@ recebidos no AutorDTO para o autor e depois no service, fazer o repository salva
 URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(autorEntidade.getId()).toUri();
 return ResponseEntity.created(location).build();
 - No autorcontroller, criar um metodo que recebe nome e/ou nacionalidade para pesquisar
-- No AutorService, criar um metodo para pesquisa obtendo nome e nacionalidade, para isso é
-necessario criar metodos no repository
-
+- No AutorService, criar um metodo para pesquisa obtendo nome e nacionalidade, para isso será necessario criar metodos no repository
+- Criar o DTO padronizado para erros: Na pasta dto, criar um record chamado ErroCampo com string campo e erro
+- Criar outro record chamado ErroResposta com int status, string mensagem, List<ErroCampo> erros
+- Criar alguns metodos dentro do ErroResposta:
+respostaPadrao, conflito e outras se quiser
+- Adicionar a classe ErroResposta como parametro de saida dos controllers
+- Criar a pasta Exception e 
 - Criar uma nova pasta com uma classe e metodos para validar as informaçoes para o service
 - Criar uma exception handler para os erros
 - Criar também uma API para os livros com bean validation

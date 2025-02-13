@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.cursospringboot.libraryapi.Controller.AutorDTO;
+import com.cursospringboot.libraryapi.DTO.AutorDTO;
 import com.cursospringboot.libraryapi.Model.Autor;
 import com.cursospringboot.libraryapi.Repository.AutorRepository;
 
@@ -43,12 +43,14 @@ public class AutorService {
         }
     }
     //atualizar
-    public Autor atualizar(Autor autor) {
+    public void atualizar(Autor autor) {
         try {
-            return autorRepository.save(autor);
-        } catch (Exception erro) {
+            Optional<Autor> autorEncontrado = buscarPeloId(autor.getId());
+            if (autorEncontrado.isPresent()) {
+                autorRepository.save(autor);
+            }
+        } catch (Exception erro) {  
             System.out.println("Erro: " + erro.getMessage());
-            return autor;
         }
     }
     //buscar um
@@ -73,11 +75,11 @@ public class AutorService {
     //buscar pelo nome e nacionalidade
     public List<Autor> buscarNomeNacionalidade (String nome, String nacionalidade) {
         if(nome != null && nacionalidade != null) {
-            return autorRepository.buscarNomeNacionalidade(nome, nacionalidade);
+            return autorRepository.findByNomeAndNacionalidade(nome, nacionalidade);
         } else if (nome != null && nacionalidade == null) {
-            return autorRepository.buscarNome(nome);
+            return autorRepository.findByNome(nome);
         } else if (nome == null && nacionalidade != null) {
-            return autorRepository.buscarNacionalidade(nacionalidade);
+            return autorRepository.findByNacionalidade(nacionalidade);
         } else {
             System.out.println("Campos para pesquisa vazios.");
             return List.of();
