@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cursospringboot.libraryapi.Model.Autor;
@@ -13,12 +12,13 @@ import com.cursospringboot.libraryapi.Model.Livro;
 import com.cursospringboot.libraryapi.Repository.AutorRepository;
 import com.cursospringboot.libraryapi.Repository.LivroRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class LivroService {
 
-    @Autowired
     LivroRepository livroRepository;
-    @Autowired
     AutorRepository autorRepository;
 
     //listar

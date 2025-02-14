@@ -86,28 +86,20 @@ respostaPadrao, conflito e outras se quiser
 - Criar um construtor para utilizar um super da runtime com uma mensage
 - Criar uma pasta Validator com um classe AutorValidator, adicionar @Component e injetar dependencia do AutorRepository
 - Criar lógicas de validação
-- 
 - Criar uma exception handler para os erros
-- Criar também uma API para os livros com bean validation
+- No autorDTO adicionar @NotBlank(message = "O campo nome é obrigatório") para o atributo nome, @NotNull para o dataNascimento, @NotBlank para o nacionalidade
+- No autorController, no parametro do metodo, adicionar @Valid depois do @RequestBody e antes dos parametros
+- No autorservice, criar metodo que nao permite excluir um autor que possui livro cadastrado
+- Criar exceçao OperacaoNaoPermitidaException
+- Criar metodo no repository para buscar livro pelo autor (findByAutor recebendo Autor autor)
+- Adicionar @RequiredArgsConstructor em todas classes e remover o @Autowired
 - Adicionar dependencia do starter-validation no pom:
 <dependency><groupId>org.springramework.boot</groupId>
 <artefactId>spring-boot-starter-validation</artefactId></dependency>
 - mvn clean install -DskipTests
-- No autorDTO adicionar @NotBlank(message = "O campo nome é obrigatório") para o atributo nome, @NotNull para o dataNascimento, @NotBlank para o nacionalidade
-- No autorController, no parametro do metodo, adicionar @Valid depois do @RequestBody e antes dos parametros
-- 
-- 
-- 
-- 
-- 
-- 
-- Adicionar o properties do mapstruct no maven
-- Adicionar a dependencia do mapstruct no maven
-- Adicionar o plugin do mapstruct no maven
-- Adicionar o path do lombok junto ao do mapstruct no maven (em annotationprocessorpaths)
-- Criar novo package chamado mappers, e criar uma interface chamada AutorMapper
-com @Mapper(componentModel = "spring")
-
+- No autorDTO adicionar @NotBlank ou @NotNull e o @Size nos parametros
+- Criar pasta common dentro de Controller, e criar classe GlobalExceptionHandler para tratar os erros do bean validation
+- Criar handler do bean validation
 - 
 - 
 - 

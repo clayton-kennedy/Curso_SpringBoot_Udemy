@@ -8,6 +8,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.cursospringboot.libraryapi.DTO.AutorDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -51,4 +53,11 @@ public class Autor {
     private List<Livro> livros;
 
     public Autor() {}
+
+    public Autor(UUID id, String nome, String nacionalidade, LocalDate dataNascimento) {
+        this.id = id;
+        this.nome = nome;
+        this.nacionalidade = nacionalidade;
+        this.dataNascimento = dataNascimento;
+    }
 }

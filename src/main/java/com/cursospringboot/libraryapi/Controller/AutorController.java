@@ -1,6 +1,4 @@
 package com.cursospringboot.libraryapi.Controller;
-
-
 import static org.springframework.http.HttpStatus.*;
 
 import java.net.URI;
@@ -17,12 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cursospringboot.libraryapi.DTO.AutorDTO;
+import com.cursospringboot.libraryapi.DTO.ErroResposta;
 import com.cursospringboot.libraryapi.Exception.AutorNaoEncontrado;
+import com.cursospringboot.libraryapi.Exception.OperacaoNaoPermitidaException;
 import com.cursospringboot.libraryapi.Exception.RegistroDuplicadoException;
 import com.cursospringboot.libraryapi.Model.Autor;
 import com.cursospringboot.libraryapi.Service.AutorService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,14 +33,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/autor")
+@RequiredArgsConstructor
 public class AutorController {
-    @Autowired
     AutorService autorService;
     
     //adicionar
     @PostMapping
-    public ResponseEntity<?> adicionar(@RequestBody Autor autor) {
+    public ResponseEntity<?> adicionar(@RequestBody @Valid AutorDTO autorDTO) {
         try {
+            Autor autor = autorService.mapearParaAutor(autorDTO);
             Autor autorSalvo = autorService.adicionar(autor);          
             URI linkAutor = ServletUriComponentsBuilder.fromCurrentRequest()
                                 .path("/{id}")
@@ -61,15 +63,16 @@ public class AutorController {
         try {
             autorService.remover(id);
             return ResponseEntity.status(CREATED).body("Autor "+ id + " removido com sucesso!");
-        } catch (Exception erro) {
-            return ResponseEntity.status(BAD_REQUEST).body(erro.getMessage());
+        } catch (OperacaoNaoPermitidaException e) {
+            var erroResposta = ErroResposta.respostaPadrao(e.getMessage());
+            return ResponseEntity.status(erroResposta.status()).body(erroResposta);
         }
     }
     //atualizar
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@RequestBody @Valid AutorDTO autorDTO) {
     try {
-        Autor autorAtualizado = autorService.atualizar(autorDTO);
+        Autor autorAtualizado = autorService.atualizar(autorService.mapearParaAutor(autorDTO));
         return ResponseEntity.ok(new AutorDTO(autorAtualizado.getId(), autorAtualizado.getNome(), autorAtualizado.getDataNascimento(), autorAtualizado.getNacionalidade()));
 
     } catch (AutorNaoEncontrado ex) {

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,13 +17,14 @@ import com.cursospringboot.libraryapi.Model.Livro;
 import com.cursospringboot.libraryapi.Service.AutorService;
 import com.cursospringboot.libraryapi.Service.LivroService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/livros")
+@RequiredArgsConstructor
 public class LivroController {
 
-    @Autowired
     LivroService livroService;
-    @Autowired
     AutorService autorService;
 
     //listar

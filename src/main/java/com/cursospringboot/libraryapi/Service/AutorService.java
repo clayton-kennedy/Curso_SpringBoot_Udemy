@@ -5,26 +5,29 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cursospringboot.libraryapi.DTO.AutorDTO;
+import com.cursospringboot.libraryapi.Exception.OperacaoNaoPermitidaException;
 import com.cursospringboot.libraryapi.Exception.RegistroDuplicadoException;
 import com.cursospringboot.libraryapi.Model.Autor;
 import com.cursospringboot.libraryapi.Repository.AutorRepository;
+import com.cursospringboot.libraryapi.Repository.LivroRepository;
 import com.cursospringboot.libraryapi.Validator.AutorValidator;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AutorService {
-    @Autowired
     AutorRepository autorRepository;
-    @Autowired
     AutorValidator autorValidator;
+    LivroRepository livroRepository;
 
     //listar
     public Autor adicionar(Autor autor) {
         try {
-            if(!autorValidator.JaExisteAutor(autor)) {
+            if(!autorValidator.ExisteAutor(autor)) {
             return autorRepository.save(autor);
             }
             throw new RegistroDuplicadoException("Autor já cadastrado!");
@@ -36,21 +39,25 @@ public class AutorService {
     //remover
     public String remover(UUID id) {
         try {
-            if (autorValidator.JaExisteAutor(id)) {
-                autorRepository.deleteById(id);
-                return "Autor removido com sucesso!";
-            }
-            return "Autor não encontrado.";
+            Autor autor = buscarPeloId(id).get();
+            if (!possuiLivro(autor)) {
+                if (autorValidator.ExisteAutor(id)) {
+                    autorRepository.deleteById(id);
+                    return "Autor removido com sucesso!";
+                }
+                return "Autor não encontrado.";
+        } 
+        throw new OperacaoNaoPermitidaException("Não foi possível remover pois o autor possui livro cadastrado.");
         } catch (Exception erro) {
             System.out.println("Erro: " + erro.getMessage());
             return "Não foi possível remover o autor.";
         }
     }
     //atualizar
-    public Autor atualizar(AutorDTO autorDTO) {
+    public Autor atualizar(Autor autor) {
         Autor autorfalho = new Autor();
         try {
-                Autor autor = autorValidator.validarParaAtualizarAutor(autorDTO);
+                autorValidator.validarParaAtualizarAutor(autor);
                 return autorRepository.save(autor);
         } catch (Exception erro) {
             System.out.println("Erro: " + erro.getMessage());
@@ -88,6 +95,15 @@ public class AutorService {
             System.out.println("Campos para pesquisa vazios.");
             return List.of();
         }
+    }
+    //verificar se o autor possui livro
+    public Boolean possuiLivro(Autor autor) {
+        return livroRepository.existsByAutor(autor);
+    }
+    //transformar dto em autor
+    public Autor mapearParaAutor(AutorDTO dto) {
+        Autor autor = new Autor(dto.id(),dto.nome(),dto.nacionalidade(),dto.dataNascimento());
+        return autor;
     }
 }
 
