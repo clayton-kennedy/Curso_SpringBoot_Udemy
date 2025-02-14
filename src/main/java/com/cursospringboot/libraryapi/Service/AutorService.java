@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import com.cursospringboot.libraryapi.DTO.AutorDTO;
@@ -84,7 +86,7 @@ public class AutorService {
         }
     }
     //buscar pelo nome e nacionalidade
-    public List<Autor> buscarNomeNacionalidade (String nome, String nacionalidade) {
+    public List<Autor> pesquisa (String nome, String nacionalidade) {
         if(nome != null && nacionalidade != null) {
             return autorRepository.findByNomeAndNacionalidade(nome, nacionalidade);
         } else if (nome != null && nacionalidade == null) {
@@ -95,6 +97,21 @@ public class AutorService {
             System.out.println("Campos para pesquisa vazios.");
             return List.of();
         }
+    }
+    public List<Autor> pesquisaByExample(String nome, String nacionalidade) {
+        Autor autor = new Autor();
+        autor.setNome(nome);
+        autor.setNacionalidade(nacionalidade);
+
+        ExampleMatcher matcher = ExampleMatcher
+        .matching()
+        .withIgnorePaths("id","dataNascimento", "dataCAdastro")
+        .withIgnoreNullValues()
+        .withIgnoreCase()
+        .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        Example<Autor> autorExample = Example.of(autor, matcher);
+
+        return autorRepository.findAll(autorExample);
     }
     //verificar se o autor possui livro
     public Boolean possuiLivro(Autor autor) {

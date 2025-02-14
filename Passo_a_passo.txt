@@ -100,7 +100,7 @@ respostaPadrao, conflito e outras se quiser
 - No autorDTO adicionar @NotBlank ou @NotNull e o @Size nos parametros
 - Criar pasta common dentro de Controller, e criar classe GlobalExceptionHandler para tratar os erros do bean validation
 - Criar handler do bean validation
-- 
+- Criar pesquisa de autores com Example
 - 
 - 
 - 
