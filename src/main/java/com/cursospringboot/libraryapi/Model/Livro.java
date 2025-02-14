@@ -1,9 +1,12 @@
 package com.cursospringboot.libraryapi.Model;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.UUID;
 
 import org.hibernate.validator.constraints.ISBN;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Column;
@@ -19,7 +22,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.Data;
 
 @Entity
@@ -30,10 +33,6 @@ public class Livro {
     @Id
     @GeneratedValue ( strategy = GenerationType.UUID)
     private UUID id;
-
-    @ManyToOne
-    @JoinColumn (name = "id_autor")
-    private Autor autor;
     
     @Enumerated(EnumType.STRING)
     @Column(name = "genero", length = 30, nullable = false)
@@ -51,12 +50,24 @@ public class Livro {
 
     @Column(name = "data_publicacao", nullable = false)
     @NotNull
-    @Past
+    @PastOrPresent
     private LocalTime dataPublicacao;
 
-    @Column(name = "preco", nullable = false)
+    @Column(name = "preco", nullable = true)
     @NotNull
     private Double preco;
+
+    @ManyToOne
+    @JoinColumn (name = "id_autor")
+    private Autor autor;
+
+    @CreatedDate
+    @Column(name = "data_cadastro")
+    private LocalDate dataCadastro;
+
+    @LastModifiedDate
+    @Column(name = "data_atualizado")
+    private LocalDate dataAtualizado;
 
     public Livro() {}
 }

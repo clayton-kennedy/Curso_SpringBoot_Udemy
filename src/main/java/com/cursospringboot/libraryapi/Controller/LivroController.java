@@ -1,10 +1,13 @@
 package com.cursospringboot.libraryapi.Controller;
 
+import static org.springframework.http.HttpStatus.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,11 +15,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cursospringboot.libraryapi.DTO.CadastroLivroDTO;
+import com.cursospringboot.libraryapi.DTO.ErroResposta;
+import com.cursospringboot.libraryapi.Exception.RegistroDuplicadoException;
 import com.cursospringboot.libraryapi.Model.Autor;
 import com.cursospringboot.libraryapi.Model.Livro;
 import com.cursospringboot.libraryapi.Service.AutorService;
 import com.cursospringboot.libraryapi.Service.LivroService;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -29,12 +37,12 @@ public class LivroController {
 
     //listar
     @PostMapping
-    public Livro adicionar(Livro livro) {
+    public ResponseEntity<?> adicionar(@RequestBody @Valid CadastroLivroDTO dto) {
         try {
-            return livroService.adicionar(livro);
-        } catch (Exception erro) {
-            System.out.println("Erro: " + erro.getMessage());
-            return livro;
+            return ResponseEntity.status(OK).body("Cadastrado com sucesso");
+        } catch (RegistroDuplicadoException e) {
+            var erro = ErroResposta.conflito(e.getMessage());
+            return ResponseEntity.status(erro.status()).body(erro);
         }
     }
 
@@ -52,7 +60,7 @@ public class LivroController {
 
     //atualizar
     @PutMapping
-    public Livro atualizar(Livro livro) {
+    public Livro atualizar(@RequestBody @Valid Livro livro) {
         try {
             return livroService.atualizar(livro);
         } catch (Exception erro) {

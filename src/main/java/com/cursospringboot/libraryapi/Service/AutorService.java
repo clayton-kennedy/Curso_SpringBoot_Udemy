@@ -22,28 +22,24 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AutorService {
-    AutorRepository autorRepository;
-    AutorValidator autorValidator;
-    LivroRepository livroRepository;
+    private final AutorRepository autorRepository;
+    private final AutorValidator autorValidator;
+    private final LivroRepository livroRepository;
 
     //listar
     public Autor adicionar(Autor autor) {
-        try {
-            if(!autorValidator.ExisteAutor(autor)) {
-            return autorRepository.save(autor);
+            if(autorValidator.existeAutor(autor) == false) {
+                return autorRepository.save(autor);
+            } else {
+                throw new RegistroDuplicadoException("Autor já cadastrado!");
             }
-            throw new RegistroDuplicadoException("Autor já cadastrado!");
-        } catch (Exception erro) {
-            System.out.println("Erro: " + erro.getMessage());
-            throw new RegistroDuplicadoException("Autor já cadastrado!");
-        }
     }
     //remover
     public String remover(UUID id) {
         try {
             Autor autor = buscarPeloId(id).get();
             if (!possuiLivro(autor)) {
-                if (autorValidator.ExisteAutor(id)) {
+                if (autorValidator.existeAutor(id) == true) {
                     autorRepository.deleteById(id);
                     return "Autor removido com sucesso!";
                 }
@@ -86,18 +82,18 @@ public class AutorService {
         }
     }
     //buscar pelo nome e nacionalidade
-    public List<Autor> pesquisa (String nome, String nacionalidade) {
-        if(nome != null && nacionalidade != null) {
-            return autorRepository.findByNomeAndNacionalidade(nome, nacionalidade);
-        } else if (nome != null && nacionalidade == null) {
-            return autorRepository.findByNome(nome);
-        } else if (nome == null && nacionalidade != null) {
-            return autorRepository.findByNacionalidade(nacionalidade);
-        } else {
-            System.out.println("Campos para pesquisa vazios.");
-            return List.of();
-        }
-    }
+    // public List<Autor> pesquisa (String nome, String nacionalidade) {
+    //     if(nome != null && nacionalidade != null) {
+    //         return autorRepository.findByNomeAndNacionalidade(nome, nacionalidade);
+    //     } else if (nome != null && nacionalidade == null) {
+    //         return autorRepository.findByNome(nome);
+    //     } else if (nome == null && nacionalidade != null) {
+    //         return autorRepository.findByNacionalidade(nacionalidade);
+    //     } else {
+    //         System.out.println("Campos para pesquisa vazios.");
+    //         return List.of();
+    //     }
+    // }
     public List<Autor> pesquisaByExample(String nome, String nacionalidade) {
         Autor autor = new Autor();
         autor.setNome(nome);

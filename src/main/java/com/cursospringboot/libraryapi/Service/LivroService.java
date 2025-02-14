@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.cursospringboot.libraryapi.DTO.CadastroLivroDTO;
 import com.cursospringboot.libraryapi.Model.Autor;
 import com.cursospringboot.libraryapi.Model.Livro;
 import com.cursospringboot.libraryapi.Repository.AutorRepository;
@@ -73,6 +74,19 @@ public class LivroService {
         }
     }
 
+    //Converter de dto para dominio
+    // public Livro converterDTO(CadastroLivroDTO dto) {
+    //     Livro livro = new Livro(
+    //         dto.id(),
+    //         dto.titulo(),
+    //         dto.isbn(),
+    //         dto.dataPublicacao(),
+    //         dto.genero(),
+    //         dto.preco(),
+    //         dto.autor().id()
+    //         );
+    //     return livro;
+    // }
     //buscar livro e autor
     public List<?> buscarLivroAutor(UUID idLivro, UUID idAutor) {
         Optional<Livro> livro = livroRepository.findById(idLivro);

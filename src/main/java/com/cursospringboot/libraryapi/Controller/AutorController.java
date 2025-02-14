@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +18,6 @@ import com.cursospringboot.libraryapi.DTO.AutorDTO;
 import com.cursospringboot.libraryapi.DTO.ErroResposta;
 import com.cursospringboot.libraryapi.Exception.AutorNaoEncontrado;
 import com.cursospringboot.libraryapi.Exception.OperacaoNaoPermitidaException;
-import com.cursospringboot.libraryapi.Exception.RegistroDuplicadoException;
 import com.cursospringboot.libraryapi.Model.Autor;
 import com.cursospringboot.libraryapi.Service.AutorService;
 
@@ -35,28 +34,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/autor")
 @RequiredArgsConstructor
 public class AutorController {
-    AutorService autorService;
-    
-    //adicionar
+
+    private final AutorService autorService;
+
     @PostMapping
     public ResponseEntity<?> adicionar(@RequestBody @Valid AutorDTO autorDTO) {
         try {
+            System.out.println(autorDTO);
             Autor autor = autorService.mapearParaAutor(autorDTO);
-            Autor autorSalvo = autorService.adicionar(autor);          
+            Autor autorSalvo = autorService.adicionar(autor);
             URI linkAutor = ServletUriComponentsBuilder.fromCurrentRequest()
                                 .path("/{id}")
                                 .buildAndExpand(autorSalvo.getId())
                                 .toUri();
     
-            return ResponseEntity.created(linkAutor).body(new AutorDTO(autorSalvo.getId(), autorSalvo.getNome(), autorSalvo.getDataNascimento(), autorSalvo.getNacionalidade()));
-        
-        } catch (RegistroDuplicadoException ex) {
-            return ResponseEntity.status(CONFLICT).body("Autor já cadastrado!");
+            return ResponseEntity.created(linkAutor).body(autorSalvo);
         
         } catch (Exception erro) {
-            return ResponseEntity.status(BAD_REQUEST).body("Erro ao cadastrar autor: " + erro.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Erro ao cadastrar autor: " + erro.getMessage() +"\n");
         }
-    }    
+    } 
     //remover
     @DeleteMapping("/{id}")
     public ResponseEntity<?> remover(@PathVariable UUID id) {

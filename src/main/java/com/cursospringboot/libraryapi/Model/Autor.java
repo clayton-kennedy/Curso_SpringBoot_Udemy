@@ -8,8 +8,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.cursospringboot.libraryapi.DTO.AutorDTO;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -46,7 +44,7 @@ public class Autor {
     @LastModifiedDate
     private LocalDate dataAtualizacao;
 
-    @Column(name = "id_usuario", length = 100, nullable = false)
+    @Column(name = "id_usuario", length = 100, nullable = true)
     private UUID id_usuario;
 
     @OneToMany (mappedBy = "autor")

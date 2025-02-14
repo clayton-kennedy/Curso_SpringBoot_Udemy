@@ -8,7 +8,6 @@ import com.cursospringboot.libraryapi.DTO.AutorDTO;
 import com.cursospringboot.libraryapi.Exception.AutorNaoEncontrado;
 import com.cursospringboot.libraryapi.Model.Autor;
 import com.cursospringboot.libraryapi.Repository.AutorRepository;
-import com.cursospringboot.libraryapi.Service.AutorService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,16 +15,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AutorValidator {
     final AutorRepository autorRepository;
-    final AutorService autorService;
 
-
-    public Boolean ExisteAutor(Autor autor) {
-        return !autorRepository.findByNomeAndNacionalidade(autor.getNome(), autor.getNacionalidade()).isEmpty();
+    public Boolean existeAutor(Autor autor) {
+        return autorRepository.findByNome(autor.getNome()).isEmpty();
     }
-    public Boolean ExisteAutor(UUID id) {
+    public Boolean existeAutor(UUID id) {
         return autorRepository.existsById(id);
     }
-    public Boolean ExisteAutor(AutorDTO autorDTO) {
+    public Boolean existeAutor(AutorDTO autorDTO) {
         return autorRepository.existsById(autorDTO.id());
     }
     public Autor validarParaAtualizarAutor(Autor dto) {
