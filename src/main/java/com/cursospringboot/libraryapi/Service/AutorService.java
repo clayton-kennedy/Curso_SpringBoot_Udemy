@@ -9,7 +9,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
-import com.cursospringboot.libraryapi.DTO.AutorDTO;
 import com.cursospringboot.libraryapi.Exception.OperacaoNaoPermitidaException;
 import com.cursospringboot.libraryapi.Exception.RegistroDuplicadoException;
 import com.cursospringboot.libraryapi.Model.Autor;
@@ -95,11 +94,6 @@ public class AutorService {
     //verificar se o autor possui livro
     public Boolean possuiLivro(Autor autor) {
         return livroRepository.existsByAutor(autor);
-    }
-    //transformar dto em autor
-    public Autor mapearParaAutor(AutorDTO dto) {
-        Autor autor = new Autor(dto.id(),dto.nome(),dto.nacionalidade(),dto.dataNascimento());
-        return autor;
     }
 }
 

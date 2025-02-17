@@ -131,4 +131,10 @@ respostaPadrao, conflito e outras se quiser
 		</annotationProcessorPaths>
 	</configuration>
 </plugin>
+- Criar pasta dentro de Controllers chamada Mappers e criar interface AutorMapper
+- Adicionar annotations: @Mapper(componentModel = "spring")
+- Criar os metodos:
+    Autor toEntity(AutorDTO dto); //para converter de entidade para dto
+    AutorDTO toDTO (Autor autor); //para converter de dto para entidade
+- No AutorService e AutorController, fazer as conversões de classe
 - 
