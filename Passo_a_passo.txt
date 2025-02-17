@@ -102,5 +102,33 @@ respostaPadrao, conflito e outras se quiser
 - Criar handler do bean validation
 - Criar pesquisa de autores com Example
 - Criar API dos livros
-- Criar DTO para CadastrarLivro e outro DTO para resultadoPesquisaLivroDTO
+- Criar DTO para CadastrarLivroDTO e outro DTO para ResultadoPesquisaLivroDTO
+- Adicionar a propriedade do Mapstruct no pom
+<properties>
+	<java.version>21</java.version>
+    <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+</properties>
+- Adicionar o MapStruct para criar automaticamente os DTOs no pom
+<dependency>
+	<groupId>org.mapstruct</groupId>
+	<artefactId>mapstruct</artefactId>
+	<version>${org.mapstruct.version}</version>
+</dependency>
+- Adicionar o plugin do MapStruct
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artefactId>maven-compiler-plugin</artefactId>
+	<version>latest</version>
+	<configuration>
+		<source>latest</source>
+		<target>latest</target>
+		<annotationProcessorPaths>
+			<path>
+					<groupId>org.mapstruct</groupId>
+					<artefactId>mapstruct-processor</artefactId>
+					<version>${org.mapstruct.version}</version>
+			</path>
+		</annotationProcessorPaths>
+	</configuration>
+</plugin>
 - 

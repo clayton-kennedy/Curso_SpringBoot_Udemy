@@ -17,8 +17,8 @@ public class AutorValidator {
     final AutorRepository autorRepository;
 
     public Boolean existeAutor(Autor autor) {
-        return autorRepository.findByNome(autor.getNome()).isEmpty();
-    }
+        return autorRepository.existsByNomeAndNacionalidade(autor.getNome(), autor.getNacionalidade());
+    }    
     public Boolean existeAutor(UUID id) {
         return autorRepository.existsById(id);
     }

@@ -3,6 +3,7 @@ package com.cursospringboot.libraryapi.DTO;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.*;
 
 public record AutorDTO (
@@ -18,7 +19,11 @@ public record AutorDTO (
 
     @NotBlank(message = "Campo nacionalidade é obrigatório")
     @Size(max = 20, message = "Campo fora do tamanho padrão.")
-    String nacionalidade) {
+    String nacionalidade,
+    
+    @Nullable
+    UUID id_usuario
+    ) {
 
     }
 

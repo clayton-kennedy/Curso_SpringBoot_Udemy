@@ -31,7 +31,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
-@RequestMapping("/autor")
+@RequestMapping("/autores")
 @RequiredArgsConstructor
 public class AutorController {
 
@@ -70,7 +70,7 @@ public class AutorController {
     public ResponseEntity<?> atualizar(@RequestBody @Valid AutorDTO autorDTO) {
     try {
         Autor autorAtualizado = autorService.atualizar(autorService.mapearParaAutor(autorDTO));
-        return ResponseEntity.ok(new AutorDTO(autorAtualizado.getId(), autorAtualizado.getNome(), autorAtualizado.getDataNascimento(), autorAtualizado.getNacionalidade()));
+        return ResponseEntity.ok(new AutorDTO(autorAtualizado.getId(), autorAtualizado.getNome(), autorAtualizado.getDataNascimento(), autorAtualizado.getNacionalidade(), autorAtualizado.getId_usuario()));
 
     } catch (AutorNaoEncontrado ex) {
         return ResponseEntity.status(NOT_FOUND).body(ex.getMessage());
@@ -86,7 +86,7 @@ public class AutorController {
     public ResponseEntity<?> buscarPeloId(@PathVariable UUID id) {
         try {
             Optional<Autor> autorEncontrado = autorService.buscarPeloId(id);
-            AutorDTO autorDTO = new AutorDTO(autorEncontrado.get().getId() ,autorEncontrado.get().getNome(), autorEncontrado.get().getDataNascimento(), autorEncontrado.get().getNacionalidade());
+            AutorDTO autorDTO = new AutorDTO(autorEncontrado.get().getId() ,autorEncontrado.get().getNome(), autorEncontrado.get().getDataNascimento(), autorEncontrado.get().getNacionalidade(), autorEncontrado.get().getId_usuario());
             return ResponseEntity.status(CREATED).body(autorDTO);
         } catch (Exception erro) {
             return ResponseEntity.status(BAD_REQUEST).body(erro.getMessage());
@@ -98,7 +98,7 @@ public class AutorController {
         try {
             List<Autor> autores = autorService.buscarTodos();
             List<AutorDTO> autoresDTO = autores.stream()
-                                                .map(autor -> new AutorDTO(autor.getId(), autor.getNome(), autor.getDataNascimento(), autor.getNacionalidade()))
+                                                .map(autor -> new AutorDTO(autor.getId(), autor.getNome(), autor.getDataNascimento(), autor.getNacionalidade(), autor.getId_usuario()))
                                                 .toList();
             return ResponseEntity.status(CREATED).body(autoresDTO);
         } catch (Exception erro) {
@@ -112,7 +112,7 @@ public class AutorController {
         @RequestParam(value = "nacionalidade", required = false) String nacionalidade) {
         List<Autor> resultado = autorService.pesquisaByExample(nome, nacionalidade);
         List<AutorDTO> lista = resultado.stream()
-                                .map(autor -> new AutorDTO(autor.getId(), autor.getNome(), autor.getDataNascimento(), autor.getNacionalidade()))
+                                .map(autor -> new AutorDTO(autor.getId(), autor.getNome(), autor.getDataNascimento(), autor.getNacionalidade(), autor.getId_usuario()))
                                 .toList();
         return ResponseEntity.ok(lista);
     }

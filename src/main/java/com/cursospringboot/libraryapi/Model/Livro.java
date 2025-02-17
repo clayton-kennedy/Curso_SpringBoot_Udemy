@@ -31,13 +31,8 @@ import lombok.Data;
 @EntityListeners(AuditingEntityListener.class)
 public class Livro {
     @Id
-    @GeneratedValue ( strategy = GenerationType.UUID)
+    @GeneratedValue (strategy = GenerationType.UUID)
     private UUID id;
-    
-    @Enumerated(EnumType.STRING)
-    @Column(name = "genero", length = 30, nullable = false)
-    @NotBlank
-    private GeneroLivro genero;
 
     @Column(name = "isbn", nullable = false)
     @NotBlank
@@ -53,6 +48,11 @@ public class Livro {
     @PastOrPresent
     private LocalTime dataPublicacao;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "genero", length = 30, nullable = false)
+    @NotBlank
+    private GeneroLivro genero;
+    
     @Column(name = "preco", nullable = true)
     @NotNull
     private Double preco;

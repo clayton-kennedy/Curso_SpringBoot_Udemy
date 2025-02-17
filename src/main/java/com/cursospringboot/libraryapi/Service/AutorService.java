@@ -35,31 +35,27 @@ public class AutorService {
             }
     }
     //remover
-    public String remover(UUID id) {
+    public void remover(UUID id) {
         try {
             Autor autor = buscarPeloId(id).get();
             if (!possuiLivro(autor)) {
                 if (autorValidator.existeAutor(id) == true) {
                     autorRepository.deleteById(id);
-                    return "Autor removido com sucesso!";
                 }
-                return "Autor não encontrado.";
         } 
         throw new OperacaoNaoPermitidaException("Não foi possível remover pois o autor possui livro cadastrado.");
         } catch (Exception erro) {
             System.out.println("Erro: " + erro.getMessage());
-            return "Não foi possível remover o autor.";
         }
     }
     //atualizar
     public Autor atualizar(Autor autor) {
-        Autor autorfalho = new Autor();
         try {
                 autorValidator.validarParaAtualizarAutor(autor);
                 return autorRepository.save(autor);
         } catch (Exception erro) {
             System.out.println("Erro: " + erro.getMessage());
-            return autorfalho;
+            throw new OperacaoNaoPermitidaException("Falha ao atualizar autor");
         }
     }
     //buscar um
@@ -81,19 +77,6 @@ public class AutorService {
             return autores;
         }
     }
-    //buscar pelo nome e nacionalidade
-    // public List<Autor> pesquisa (String nome, String nacionalidade) {
-    //     if(nome != null && nacionalidade != null) {
-    //         return autorRepository.findByNomeAndNacionalidade(nome, nacionalidade);
-    //     } else if (nome != null && nacionalidade == null) {
-    //         return autorRepository.findByNome(nome);
-    //     } else if (nome == null && nacionalidade != null) {
-    //         return autorRepository.findByNacionalidade(nacionalidade);
-    //     } else {
-    //         System.out.println("Campos para pesquisa vazios.");
-    //         return List.of();
-    //     }
-    // }
     public List<Autor> pesquisaByExample(String nome, String nacionalidade) {
         Autor autor = new Autor();
         autor.setNome(nome);
@@ -101,7 +84,7 @@ public class AutorService {
 
         ExampleMatcher matcher = ExampleMatcher
         .matching()
-        .withIgnorePaths("id","dataNascimento", "dataCAdastro")
+        .withIgnorePaths("id","dataNascimento", "dataCadastro")
         .withIgnoreNullValues()
         .withIgnoreCase()
         .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);

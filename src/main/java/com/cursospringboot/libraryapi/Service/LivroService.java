@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.cursospringboot.libraryapi.DTO.CadastroLivroDTO;
 import com.cursospringboot.libraryapi.Model.Autor;
 import com.cursospringboot.libraryapi.Model.Livro;
 import com.cursospringboot.libraryapi.Repository.AutorRepository;
@@ -19,8 +18,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LivroService {
 
-    LivroRepository livroRepository;
-    AutorRepository autorRepository;
+    private LivroRepository livroRepository;
+    private AutorRepository autorRepository;
 
     //listar
     public Livro adicionar(Livro livro) {

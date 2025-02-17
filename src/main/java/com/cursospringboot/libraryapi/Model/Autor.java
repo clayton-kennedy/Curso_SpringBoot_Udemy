@@ -44,7 +44,7 @@ public class Autor {
     @LastModifiedDate
     private LocalDate dataAtualizacao;
 
-    @Column(name = "id_usuario", length = 100, nullable = true)
+    @Column(name = "id_usuario", length = 150, nullable = true)
     private UUID id_usuario;
 
     @OneToMany (mappedBy = "autor")
