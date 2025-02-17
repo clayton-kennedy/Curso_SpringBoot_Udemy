@@ -1,7 +1,6 @@
 package com.cursospringboot.libraryapi.Model;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.UUID;
 
 import org.hibernate.validator.constraints.ISBN;
@@ -23,11 +22,9 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
-import lombok.Data;
 
 @Entity
 @Table (name = "livro")
-@Data
 @EntityListeners(AuditingEntityListener.class)
 public class Livro {
     @Id
@@ -46,11 +43,11 @@ public class Livro {
     @Column(name = "data_publicacao", nullable = false)
     @NotNull
     @PastOrPresent
-    private LocalTime dataPublicacao;
+    private LocalDate dataPublicacao;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "genero", length = 30, nullable = false)
-    @NotBlank
+    @NotNull
     private GeneroLivro genero;
     
     @Column(name = "preco", nullable = true)
@@ -70,4 +67,78 @@ public class Livro {
     private LocalDate dataAtualizado;
 
     public Livro() {}
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public LocalDate getDataPublicacao() {
+        return dataPublicacao;
+    }
+
+    public void setDataPublicacao(LocalDate dataPublicacao) {
+        this.dataPublicacao = dataPublicacao;
+    }
+
+    public GeneroLivro getGenero() {
+        return genero;
+    }
+
+    public void setGenero(GeneroLivro genero) {
+        this.genero = genero;
+    }
+
+    public Double getPreco() {
+        return preco;
+    }
+
+    public void setPreco(Double preco) {
+        this.preco = preco;
+    }
+
+    public Autor getAutor() {
+        return autor;
+    }
+
+    public void setAutor(Autor autor) {
+        this.autor = autor;
+    }
+
+    public LocalDate getDataCadastro() {
+        return dataCadastro;
+    }
+
+    public void setDataCadastro(LocalDate dataCadastro) {
+        this.dataCadastro = dataCadastro;
+    }
+
+    public LocalDate getDataAtualizado() {
+        return dataAtualizado;
+    }
+
+    public void setDataAtualizado(LocalDate dataAtualizado) {
+        this.dataAtualizado = dataAtualizado;
+    }
+
+
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
@@ -16,14 +17,14 @@ import com.cursospringboot.libraryapi.Repository.AutorRepository;
 import com.cursospringboot.libraryapi.Repository.LivroRepository;
 import com.cursospringboot.libraryapi.Validator.AutorValidator;
 
-import lombok.RequiredArgsConstructor;
-
 @Service
-@RequiredArgsConstructor
 public class AutorService {
-    private final AutorRepository autorRepository;
-    private final AutorValidator autorValidator;
-    private final LivroRepository livroRepository;
+    @Autowired
+    private AutorRepository autorRepository;
+    @Autowired
+    private AutorValidator autorValidator;
+    @Autowired
+    private LivroRepository livroRepository;
 
     //listar
     public Autor adicionar(Autor autor) {
@@ -38,11 +39,12 @@ public class AutorService {
         try {
             Autor autor = buscarPeloId(id).get();
             if (!possuiLivro(autor)) {
-                if (autorValidator.existeAutor(id) == true) {
+                if (autorValidator.existeAutor(id)) {
                     autorRepository.deleteById(id);
                 }
-        } 
-        throw new OperacaoNaoPermitidaException("Não foi possível remover pois o autor possui livro cadastrado.");
+            } else {
+                throw new OperacaoNaoPermitidaException("Não foi possível remover pois o autor possui livro cadastrado.");
+            }
         } catch (Exception erro) {
             System.out.println("Erro: " + erro.getMessage());
         }

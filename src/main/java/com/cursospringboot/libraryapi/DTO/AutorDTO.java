@@ -4,7 +4,10 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import io.micrometer.common.lang.Nullable;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
 
 public record AutorDTO (
     UUID id, 
@@ -24,6 +27,26 @@ public record AutorDTO (
     @Nullable
     UUID id_usuario
     ) {
+
+    public UUID id() {
+        return id;
+    }
+
+    public String nome() {
+        return nome;
+    }
+
+    public LocalDate dataNascimento() {
+        return dataNascimento;
+    }
+
+    public String nacionalidade() {
+        return nacionalidade;
+    }
+
+    public UUID id_usuario() {
+        return id_usuario;
+    }
 
     }
 

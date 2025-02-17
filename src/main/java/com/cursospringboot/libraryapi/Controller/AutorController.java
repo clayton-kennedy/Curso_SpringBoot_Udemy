@@ -6,6 +6,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,6 @@ import com.cursospringboot.libraryapi.Model.Autor;
 import com.cursospringboot.libraryapi.Service.AutorService;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,14 +45,13 @@ public class AutorController {
     @PostMapping
     public ResponseEntity<?> adicionar(@RequestBody @Valid AutorDTO autorDTO) {
         try {
-            Autor autor = autorMapper.toEntity(autorDTO);
-            Autor autorSalvo = autorService.adicionar(autor);
+            Autor autor = autorService.adicionar(autorMapper.toEntity(autorDTO));
             URI linkAutor = ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("/{id}")
-                    .buildAndExpand(autorSalvo.getId())
+                    .buildAndExpand(autor.getId())
                     .toUri();
 
-            return ResponseEntity.created(linkAutor).body(autor);
+            return ResponseEntity.status(OK).body(autor);
 
         } catch (Exception erro) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Erro ao cadastrar autor: " + erro.getMessage() + "\n");
@@ -64,7 +63,8 @@ public class AutorController {
     public ResponseEntity<?> remover(@PathVariable UUID id) {
         try {
             autorService.remover(id);
-            return ResponseEntity.status(CREATED).body("Autor " + id + " removido com sucesso!");
+            return ResponseEntity.status(NO_CONTENT).build();
+
         } catch (OperacaoNaoPermitidaException e) {
             var erroResposta = ErroResposta.respostaPadrao(e.getMessage());
             return ResponseEntity.status(erroResposta.status()).body(erroResposta);
@@ -75,10 +75,18 @@ public class AutorController {
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@RequestBody @Valid AutorDTO autorDTO) {
         try {
-            Autor autorAtualizado = autorService.atualizar(autorMapper.toEntity(autorDTO));
+            Optional<Autor> autorEncontrado = autorService.buscarPeloId(autorDTO.id());
+            if ( !autorEncontrado.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            var autor = autorEncontrado.get();
+            autor.setId(autorDTO.id());
+            autor.setNome(autorDTO.nome());
+            autor.setNacionalidade(autorDTO.nacionalidade());
+            autor.setDataNascimento(autorDTO.dataNascimento());
 
+            Autor autorAtualizado = autorService.atualizar(autor);
             return ResponseEntity.ok(autorAtualizado);
-
         } catch (AutorNaoEncontrado ex) {
             return ResponseEntity.status(NOT_FOUND).body(ex.getMessage());
 
@@ -91,14 +99,13 @@ public class AutorController {
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarPeloId(@PathVariable UUID id) {
         try {
-            Optional<Autor> autorEncontrado = autorService.buscarPeloId(id)
+            return autorService.buscarPeloId(id)
                     .map(autor -> {
                         AutorDTO dto = autorMapper.toDTO(autor);
                         return ResponseEntity.ok(dto);
                     })
                     .orElseGet(() -> ResponseEntity.notFound().build());
 
-            return autorEncontrado.orElseGet(() -> ResponseEntity.notFound().build());
         } catch (Exception erro) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro.getMessage());
         }
@@ -119,14 +126,14 @@ public class AutorController {
     }
 
     //buscar pelo nome e nacionalidade
-    @GetMapping("/buscarNomeNacionalidade")
-    public ResponseEntity<List<AutorDTO>> buscarNomeNacionalidade(
+    @GetMapping("/pesquisar")
+    public ResponseEntity<List<AutorDTO>> pesquisar(
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "nacionalidade", required = false) String nacionalidade) {
         List<Autor> resultado = autorService.pesquisaByExample(nome, nacionalidade);
         List<AutorDTO> lista = resultado.stream()
                 .map(autorMapper::toDTO)
-                .toList();
+                .collect(Collectors.toList());
         return ResponseEntity.ok(lista);
-    }
+    }    
 }

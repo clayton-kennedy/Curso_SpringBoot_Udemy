@@ -7,7 +7,10 @@ import org.hibernate.validator.constraints.ISBN;
 
 import com.cursospringboot.libraryapi.Model.GeneroLivro;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Size;
 
 public record CadastroLivroDTO (
     @NotBlank(message = "Campo título é obrigatório")
@@ -31,6 +34,30 @@ public record CadastroLivroDTO (
     UUID idAutor
 
     ){
+
+    public String titulo() {
+        return titulo;
+    }
+
+    public String isbn() {
+        return isbn;
+    }
+
+    public LocalDate dataPublicacao() {
+        return dataPublicacao;
+    }
+
+    public GeneroLivro genero() {
+        return genero;
+    }
+
+    public Double preco() {
+        return preco;
+    }
+
+    public UUID idAutor() {
+        return idAutor;
+    }
 
     }
 

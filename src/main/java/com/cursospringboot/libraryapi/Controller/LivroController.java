@@ -2,6 +2,7 @@ package com.cursospringboot.libraryapi.Controller;
 
 import static org.springframework.http.HttpStatus.*;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.cursospringboot.libraryapi.Controller.Mappers.LivroMapper;
 import com.cursospringboot.libraryapi.DTO.CadastroLivroDTO;
 import com.cursospringboot.libraryapi.DTO.ErroResposta;
 import com.cursospringboot.libraryapi.Exception.RegistroDuplicadoException;
@@ -34,12 +37,20 @@ public class LivroController {
 
     LivroService livroService;
     AutorService autorService;
+    LivroMapper livroMapper;
 
     //listar
     @PostMapping
     public ResponseEntity<?> adicionar(@RequestBody @Valid CadastroLivroDTO dto) {
         try {
-            return ResponseEntity.status(OK).body("Cadastrado com sucesso");
+            Livro livro = livroMapper.toEntity(dto);
+            Livro livroSalvo = livroService.adicionar(livro);
+                URI linkLivro = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(livroSalvo.getId())
+                    .toUri();
+            CadastroLivroDTO dadosLivroCadastrado = livroMapper.toDto(livroSalvo);
+            return ResponseEntity.created(linkLivro).body(dadosLivroCadastrado);
         } catch (RegistroDuplicadoException e) {
             var erro = ErroResposta.conflito(e.getMessage());
             return ResponseEntity.status(erro.status()).body(erro);
