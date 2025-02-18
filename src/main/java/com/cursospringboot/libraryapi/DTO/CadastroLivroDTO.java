@@ -1,7 +1,6 @@
 package com.cursospringboot.libraryapi.DTO;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 import org.hibernate.validator.constraints.ISBN;
 
@@ -22,7 +21,6 @@ public record CadastroLivroDTO (
     @ISBN
     String isbn,
 
-    @NotNull(message = "Campo data de publicação é obrigatório")
     @PastOrPresent(message = "Data de publicação não pode ser futura à data atual.")
     LocalDate dataPublicacao,
 
@@ -31,7 +29,7 @@ public record CadastroLivroDTO (
     Double preco,
 
     @NotNull(message = "Campo de Id do autor é obrigatório.")
-    UUID idAutor
+    String idAutor
 
     ){
 
@@ -55,7 +53,7 @@ public record CadastroLivroDTO (
         return preco;
     }
 
-    public UUID idAutor() {
+    public String idAutor() {
         return idAutor;
     }
 

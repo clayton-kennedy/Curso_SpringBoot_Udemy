@@ -3,7 +3,6 @@ package com.cursospringboot.libraryapi.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -26,7 +25,7 @@ public class AutorService {
     @Autowired
     private LivroRepository livroRepository;
 
-    //listar
+    //adicionar
     public Autor adicionar(Autor autor) {
             if(autorValidator.existeAutor(autor) == false) {
                 return autorRepository.save(autor);
@@ -35,7 +34,7 @@ public class AutorService {
             }
     }
     //remover
-    public void remover(UUID id) {
+    public void remover(String id) {
         try {
             Autor autor = buscarPeloId(id).get();
             if (!possuiLivro(autor)) {
@@ -60,7 +59,7 @@ public class AutorService {
         }
     }
     //buscar um
-    public Optional<Autor> buscarPeloId(UUID id) {
+    public Optional<Autor> buscarPeloId(String id) {
         try {
             return autorRepository.findById(id);
         } catch (Exception erro) {

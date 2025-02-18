@@ -1,7 +1,6 @@
 package com.cursospringboot.libraryapi.Model;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 import org.hibernate.validator.constraints.ISBN;
 import org.springframework.data.annotation.CreatedDate;
@@ -28,8 +27,8 @@ import jakarta.validation.constraints.PastOrPresent;
 @EntityListeners(AuditingEntityListener.class)
 public class Livro {
     @Id
-    @GeneratedValue (strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue (strategy = GenerationType.AUTO)
+    private String id;
 
     @Column(name = "isbn", nullable = false)
     @NotBlank
@@ -41,7 +40,6 @@ public class Livro {
     private String titulo;
 
     @Column(name = "data_publicacao", nullable = false)
-    @NotNull
     @PastOrPresent
     private LocalDate dataPublicacao;
 
@@ -68,11 +66,11 @@ public class Livro {
 
     public Livro() {}
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 

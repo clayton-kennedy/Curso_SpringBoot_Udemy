@@ -2,7 +2,6 @@ package com.cursospringboot.libraryapi.Model;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,17 +15,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Table (name = "autor")
 @EntityListeners(AuditingEntityListener.class)
 public class Autor {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private String id;
 
     @Column(name = "nome", length = 100, nullable = false)
     private String nome;
@@ -46,25 +42,24 @@ public class Autor {
     private LocalDate dataAtualizacao;
 
     @Column(name = "id_usuario", length = 150, nullable = true)
-    private UUID id_usuario;
+    private String id_usuario;
 
     @OneToMany (mappedBy = "autor")
     private List<Livro> livros;
 
     public Autor() {}
 
-    public Autor(UUID id, String nome, String nacionalidade, LocalDate dataNascimento) {
-        this.id = id;
+    public Autor(String nome, String nacionalidade, LocalDate dataNascimento) {
         this.nome = nome;
         this.nacionalidade = nacionalidade;
         this.dataNascimento = dataNascimento;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -108,11 +103,11 @@ public class Autor {
         this.dataAtualizacao = dataAtualizacao;
     }
 
-    public UUID getId_usuario() {
+    public String getId_usuario() {
         return id_usuario;
     }
 
-    public void setId_usuario(UUID id_usuario) {
+    public void setId_usuario(String id_usuario) {
         this.id_usuario = id_usuario;
     }
 

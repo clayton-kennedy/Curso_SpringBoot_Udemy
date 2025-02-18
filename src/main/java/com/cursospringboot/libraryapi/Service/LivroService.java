@@ -3,14 +3,16 @@ package com.cursospringboot.libraryapi.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.cursospringboot.libraryapi.Model.Autor;
+import com.cursospringboot.libraryapi.Model.GeneroLivro;
 import com.cursospringboot.libraryapi.Model.Livro;
 import com.cursospringboot.libraryapi.Repository.AutorRepository;
 import com.cursospringboot.libraryapi.Repository.LivroRepository;
+import com.cursospringboot.libraryapi.Repository.Specs.LivroSpecs;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,8 +20,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LivroService {
 
-    private LivroRepository livroRepository;
-    private AutorRepository autorRepository;
+    private final LivroRepository livroRepository;
+    private final AutorRepository autorRepository;
 
     //listar
     public Livro adicionar(Livro livro) {
@@ -32,34 +34,18 @@ public class LivroService {
     }
 
     //remover
-    public String remover(UUID id) {
-        try {
-            livroRepository.deleteById(id);
-            return "Livro removido com sucesso!";
-        } catch (Exception erro) {
-            System.out.println("Erro: " + erro.getMessage());
-            return "Não foi possível remover o livro.";
-        }
+    public void remover(Livro livro) {
+        livroRepository.deleteById(livro.getId());
     }
 
     //atualizar
     public Livro atualizar(Livro livro) {
-        try {
-            return livroRepository.save(livro);
-        } catch (Exception erro) {
-            System.out.println("Erro: " + erro.getMessage());
-            return livro;
-        }
+        return livroRepository.save(livro);
     }
 
     //buscar um
-    public Optional<Livro> buscarPeloId(UUID id) {
-        try {
-            return livroRepository.findById(id);
-        } catch (Exception erro) {
-            System.out.println("Erro: " + erro.getMessage());
-            return Optional.empty();
-        }
+    public Optional<Livro> buscarPeloId(String id) {
+        return livroRepository.findById(id);
     }
 
     //buscar todos
@@ -73,31 +59,25 @@ public class LivroService {
         }
     }
 
-    //Converter de dto para dominio
-    // public Livro converterDTO(CadastroLivroDTO dto) {
-    //     Livro livro = new Livro(
-    //         dto.id(),
-    //         dto.titulo(),
-    //         dto.isbn(),
-    //         dto.dataPublicacao(),
-    //         dto.genero(),
-    //         dto.preco(),
-    //         dto.autor().id()
-    //         );
-    //     return livro;
-    // }
-    //buscar livro e autor
-    public List<?> buscarLivroAutor(UUID idLivro, UUID idAutor) {
-        Optional<Livro> livro = livroRepository.findById(idLivro);
-        Optional<Autor> autor = autorRepository.findById(idAutor);
-        List op = new ArrayList<>();
+    //Busca por filtro
+    public List<Livro> pesquisa(String isbn, String titulo, String nomeAutor, GeneroLivro genero, Integer anoPublicacao) {
 
-        if (livro.isPresent() && autor.isPresent()) {
-            op.add(livro.get());
-            op.add(autor.get());
-            return op;
-        } else {
-            return op;
+        Specification<Livro> specs = Specification.where((root, query, cb) -> cb.conjunction());
+        if (isbn != null) {
+            specs = specs.and(LivroSpecs.isbnPesquisada(isbn));
         }
+        if (titulo != null) {
+            specs = specs.and(LivroSpecs.tituloPesquisado(titulo));
+        }
+        if (genero != null) {
+            specs = specs.and(LivroSpecs.generoPesquisado(genero));
+        }
+        if (nomeAutor != null) {
+            specs = specs.and(LivroSpecs.nomeAutorPesquisado(nomeAutor));
+        }
+        if (anoPublicacao != null) {
+            specs = specs.and(LivroSpecs.anoPublicacaoPesquisado(anoPublicacao));
+        }
+        return livroRepository.findAll(specs);
     }
 }

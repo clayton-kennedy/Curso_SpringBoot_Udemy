@@ -1,21 +1,22 @@
 package com.cursospringboot.libraryapi.Controller.Mappers;
 
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cursospringboot.libraryapi.DTO.CadastroLivroDTO;
+import com.cursospringboot.libraryapi.DTO.ResultadoPesquisaLivroDTO;
 import com.cursospringboot.libraryapi.Model.Livro;
 import com.cursospringboot.libraryapi.Repository.AutorRepository;
 
-@Mapper(componentModel = "spring", uses = AutorRepository.class)
-public abstract class LivroMapper {
+@Mapper(componentModel = "spring", uses = AutorMapper.class)
+public interface LivroMapper {
 
-    @Autowired
-    protected AutorRepository autorRepository;
+    @Mapping(target = "autor", expression = "java(autorRepository.findById(dto.idAutor()).orElse(null))")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dataCadastro", ignore = true)
+    @Mapping(target = "dataAtualizado", ignore = true)
+    Livro toEntity(CadastroLivroDTO dto, @Context AutorRepository autorRepository);
 
-    @Mapping(target = "autor", expression = "java(autorRepository.findById(dto.IdAutor()).orElse(null))")
-    public abstract Livro toEntity(CadastroLivroDTO dto);
-
-    public abstract CadastroLivroDTO toDto(Livro livro);
+    public abstract ResultadoPesquisaLivroDTO toDto(Livro livro);
 }

@@ -139,7 +139,8 @@ respostaPadrao, conflito e outras se quiser
 - No AutorService e AutorController, fazer as conversões de classe
 - Criar o LivroMapper
 - Fazer as conversões também no controller de LivrosController
-    @Mapping(target = "autor", expression = "java(autorRepository.findById(dto.IdAutor()).orElse(null))")
-    public abstract Livro toEntity(CadastroLivroDTO dto);
-    public abstract CadastroLivroDTO toDto(Livro livro);
+- Alterar os campos dos controllers com o mapeamento dto do mapstruct
+- Criar metodos de resposta padrao para erros no controller/commoon/GlobalExceptionHandler
+- Adicionar resposta aos metodos de erros no controller e service
+- Criar as specifications do spring data jpa, adicionando JpaSpecificationExecutor no repository
 - 

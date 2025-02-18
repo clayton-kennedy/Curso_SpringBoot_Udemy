@@ -1,7 +1,5 @@
 package com.cursospringboot.libraryapi.Validator;
 
-import java.util.UUID;
-
 import org.springframework.stereotype.Component;
 
 import com.cursospringboot.libraryapi.DTO.AutorDTO;
@@ -19,7 +17,7 @@ public class AutorValidator {
     public Boolean existeAutor(Autor autor) {
         return autorRepository.existsByNomeAndNacionalidade(autor.getNome(), autor.getNacionalidade());
     }    
-    public Boolean existeAutor(UUID id) {
+    public Boolean existeAutor(String id) {
         return autorRepository.existsById(id);
     }
     public Boolean existeAutor(AutorDTO autorDTO) {
