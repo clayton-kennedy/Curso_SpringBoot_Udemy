@@ -13,4 +13,5 @@ import com.cursospringboot.libraryapi.Model.Livro;
 public interface LivroRepository extends JpaRepository<Livro, String>, JpaSpecificationExecutor<Livro> {
     Boolean existsByAutor (Autor autor);
     List<Livro> findByAutor(Autor autor);
+    Boolean existsByIsbn(String isbn);
 }

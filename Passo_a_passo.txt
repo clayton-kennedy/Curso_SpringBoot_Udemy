@@ -2,9 +2,9 @@
 * dto
 * responseentity
 * bean authenticator
+* specifications
+* mapstruct
 * 
-*
-*
 *
 
 - Criar a aplicação no spring initializr
@@ -143,4 +143,17 @@ respostaPadrao, conflito e outras se quiser
 - Criar metodos de resposta padrao para erros no controller/commoon/GlobalExceptionHandler
 - Adicionar resposta aos metodos de erros no controller e service
 - Criar as specifications do spring data jpa, adicionando JpaSpecificationExecutor no repository
+- Criar uma pasta: specs com uma classe: LivroSpecs que vai fazer as pesquisas no banco com os dados solicitados
+- Criar classe de validaçao para livros e seus metodos (isbn duplicado, )
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
 - 

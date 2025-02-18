@@ -62,10 +62,21 @@ public class LivroController {
     }
 
     //atualizar
-    @PutMapping
-    public Livro atualizar(@RequestBody @Valid Livro livro) {
-        return livroService.atualizar(livro);
-    }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizar(@PathVariable String id, @RequestBody @Valid CadastroLivroDTO dto) {
+        return livroService.buscarPeloId(id).map(livro -> {
+            Livro entidadeAux = livroMapper.toEntity(dto, autorRepository);
+    
+            livro.setDataPublicacao(entidadeAux.getDataPublicacao());
+            livro.setIsbn(entidadeAux.getIsbn());
+            livro.setPreco(entidadeAux.getPreco());
+            livro.setTitulo(entidadeAux.getTitulo());
+            livro.setGenero(entidadeAux.getGenero());
+            livro.setAutor(entidadeAux.getAutor());
+    
+            return ResponseEntity.ok(livroService.atualizar(livro));
+        }).orElseGet(() -> ResponseEntity.notFound().build());
+    }    
 
     //buscar um
     @GetMapping("/{id}")
