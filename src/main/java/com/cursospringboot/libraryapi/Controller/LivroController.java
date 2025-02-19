@@ -1,12 +1,10 @@
 package com.cursospringboot.libraryapi.Controller;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,11 +19,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.cursospringboot.libraryapi.Controller.Mappers.LivroMapper;
 import com.cursospringboot.libraryapi.DTO.CadastroLivroDTO;
 import com.cursospringboot.libraryapi.DTO.ResultadoPesquisaLivroDTO;
-import com.cursospringboot.libraryapi.Model.Autor;
 import com.cursospringboot.libraryapi.Model.GeneroLivro;
 import com.cursospringboot.libraryapi.Model.Livro;
 import com.cursospringboot.libraryapi.Repository.AutorRepository;
-import com.cursospringboot.libraryapi.Service.AutorService;
 import com.cursospringboot.libraryapi.Service.LivroService;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -96,17 +92,19 @@ public class LivroController {
 
     //buscar livro e autor
     @GetMapping("/pesquisa")
-    public ResponseEntity<?> pesquisa(
+    public ResponseEntity<Page<ResultadoPesquisaLivroDTO>> pesquisa(
             @RequestParam(value = "isbn", required = false) String isbn,
             @RequestParam(value = "titulo", required = false) String titulo,
             @RequestParam(value = "nome-autor", required = false) String nomeAutor,
             @RequestParam(value = "genero", required = false) GeneroLivro genero,
-            @RequestParam(value = "ano-publicacao", required = false) Integer anoPublicacao
+            @RequestParam(value = "ano-publicacao", required = false) Integer anoPublicacao,
+            @RequestParam(value = "pagina", defaultValue = "0") Integer pagina,
+            @RequestParam(value = "tamanho-pagina", defaultValue = "10") Integer tamanhoPagina
     ) {
-        var resultado = livroService.pesquisa(isbn, titulo, nomeAutor, genero, anoPublicacao);
-        var lista = resultado.stream().map(livroMapper::toDto).collect(Collectors.toList());
+        Page<Livro> paginaResultado = livroService.pesquisa(isbn, titulo, nomeAutor, genero, anoPublicacao, pagina, tamanhoPagina);
 
-        return ResponseEntity.ok(lista);
+        Page<ResultadoPesquisaLivroDTO> resultado = paginaResultado.map(livroMapper::toDto);
+
+        return ResponseEntity.ok(resultado);
     }
-
 }

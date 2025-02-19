@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.cursospringboot.libraryapi.DTO.ErroCampo;
 import com.cursospringboot.libraryapi.DTO.ErroResposta;
+import com.cursospringboot.libraryapi.Exception.CampoInvalido;
 import com.cursospringboot.libraryapi.Exception.OperacaoNaoPermitidaException;
 import com.cursospringboot.libraryapi.Exception.RegistroDuplicadoException;
 
@@ -48,5 +49,13 @@ public class GlobalExceptionHandler {
         return new ErroResposta(HttpStatus.INTERNAL_SERVER_ERROR.value(), 
         "Erro inesperado. Contate a administração do sistema.", 
         List.of());
+    }
+
+    @ExceptionHandler(CampoInvalido.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ErroResposta handleCampoInvalidoException(CampoInvalido e) {
+        return new ErroResposta(HttpStatus.UNPROCESSABLE_ENTITY.value(), 
+                                            "Erro de validação.", 
+                                            List.of(new ErroCampo(e.getCampo(), e.getMessage())));
     }
 }

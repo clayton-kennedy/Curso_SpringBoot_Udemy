@@ -1,9 +1,11 @@
 package com.cursospringboot.libraryapi.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,7 @@ import com.cursospringboot.libraryapi.Model.GeneroLivro;
 import com.cursospringboot.libraryapi.Model.Livro;
 import com.cursospringboot.libraryapi.Repository.LivroRepository;
 import com.cursospringboot.libraryapi.Repository.Specs.LivroSpecs;
+import com.cursospringboot.libraryapi.Validator.LivroValidator;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,13 +22,14 @@ import lombok.RequiredArgsConstructor;
 public class LivroService {
 
     private final LivroRepository livroRepository;
+    private final LivroValidator livroValidator;
 
     //listar
     public Livro adicionar(Livro livro) {
-        if(livro.getId() != null) {
+        if (livro.getId() != null) {
             throw new IllegalArgumentException("Livro já cadastrado!");
         }
-            return livroRepository.save(livro);
+        return livroRepository.save(livro);
     }
 
     //remover
@@ -35,10 +39,11 @@ public class LivroService {
 
     //atualizar
     public Livro atualizar(Livro livro) {
-        if(livro.getId() == null) {
+        if (livro.getId() == null) {
             throw new IllegalArgumentException("Para atualizar, é necessário que o livro já esteja salvo na base.");
         }
-            return livroRepository.save(livro);
+        livroValidator.validar(livro);
+        return livroRepository.save(livro);
     }
 
     //buscar um
@@ -48,11 +53,17 @@ public class LivroService {
 
     //buscar todos
     public List<Livro> buscarTodos() {
-            return livroRepository.findAll();
+        return livroRepository.findAll();
     }
 
     //Busca por filtro
-    public List<Livro> pesquisa(String isbn, String titulo, String nomeAutor, GeneroLivro genero, Integer anoPublicacao) {
+    public Page<Livro> pesquisa(String isbn,
+            String titulo,
+            String nomeAutor,
+            GeneroLivro genero,
+            Integer anoPublicacao,
+            Integer pagina,
+            Integer tamanho_pagina) {
 
         Specification<Livro> specs = Specification.where((root, query, cb) -> cb.conjunction());
         if (isbn != null) {
@@ -70,6 +81,8 @@ public class LivroService {
         if (anoPublicacao != null) {
             specs = specs.and(LivroSpecs.anoPublicacaoPesquisado(anoPublicacao));
         }
-        return livroRepository.findAll(specs);
+        Pageable pageRequest = PageRequest.of(pagina, tamanho_pagina);
+
+        return livroRepository.findAll(specs, pageRequest);
     }
 }
