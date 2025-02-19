@@ -104,7 +104,7 @@ respostaPadrao, conflito e outras se quiser
 - Criar a paginaçao para pesquisa
 - Atualizar a versao do spring boot (no parent dentro do pom)
 - Adicionar a dependencia do spring security
-- 
+- Criar a pasta: Config, criar a classe: SecurityConfiguration com @Configuration e @EnableWebSecurity
 - 
 - 
 - 
