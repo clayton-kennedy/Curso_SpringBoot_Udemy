@@ -105,11 +105,34 @@ respostaPadrao, conflito e outras se quiser
 - Atualizar a versao do spring boot (no parent dentro do pom)
 - Adicionar a dependencia do spring security
 - Criar a pasta: Config, criar a classe: SecurityConfiguration com @Configuration e @EnableWebSecurity
-- 
-- 
-- 
-- 
-- 
-- 
-- 
+- Criar o metodo para autenticaçao
+- Adicionar dependencia do thymeleaf (biblioteca para criar paginas web em aplicaçoes springboot)
+- mvn clean install -DskipTests
+- Criar uma pagina dentro de resources chamada templates, e um arquivo chamado login.html
+- Criar a pagina de login (pode utilizar o GPT)
+na tag html adicionar xmlns:th="http://www.thymeleaf.org"
+na tag form adicionar method="post" th:action="@{/login}"
+adicionar o campo name="" para o username e para o password
+- Dentro da pasta config criar uma classe chamada WebConfiguration com @Configuration e @EnableWebMvc
+e implementar WebMvcConfigurer
+- Sobrescrever o metodo addViewControllers com os dados da pagina de login que criamos
+- Criar um novo controller chamado LoginViewController com @Controller
+- Criar um metodo Get para /login
+- No SecurityConfiguration alterar a pagina de login para o html que criamos
+- mvn clean install -DskipTests
+- Criar uma nova interface me config chamada UserDetailsService
+- Injetar a dependencia de UserDetails
+- Em SecurityConfiguration criar um metodo @Bean com saida UserDetailsService
+- Criar os tipos de usuarios da aplciaçao
+- Criar o metodo do passwordEncoder para codificar a senha para BCryptPasswodEncoder
+- mvn clean install -DskipTests
+- no SecurityConfiguration no metodo securityFilterChain, criar as autorizaçoes com base na role do usuario (requestMatcher)
+- Criar a classe dominio usuarios
+(UUID) id, login, senha, Lista de roles
+- Verificar a versão do hibernate do projeto nas dependencias do maven
+- Adicionar a dependencia do hypersistence de acordo com a versao do hibernate
+- Adicionar as configuraçoes no atributo roles de Usuario com Type() e columnDefinition = "varchar[]"
+- Criar DTO do usuario
+- Criar classe de validaçao do usuario
+- Criar o repository, service e controller da entidade Usuario
 - 
