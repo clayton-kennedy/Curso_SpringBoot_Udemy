@@ -7,7 +7,6 @@ import com.cursospringboot.libraryapi.Model.Livro;
 
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Root;
 
 public class LivroSpecs {
     public static Specification<Livro> isbnPesquisada (String isbn) {
@@ -33,5 +32,4 @@ public class LivroSpecs {
             cb.function("to_char", String.class, root.get(
                 "dataPublicacao"), cb.literal("YYYY")), anoPublicacao.toString());
     }
-    
 }
