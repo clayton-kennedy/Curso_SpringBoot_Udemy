@@ -133,6 +133,7 @@ e implementar WebMvcConfigurer
 - Adicionar a dependencia do hypersistence de acordo com a versao do hibernate
 - Adicionar as configuraçoes no atributo roles de Usuario com Type() e columnDefinition = "varchar[]"
 - Criar DTO do usuario
+- Criar o mapper do usuario
 - Criar classe de validaçao do usuario
 - Criar o repository, service e controller da entidade Usuario
 - 
