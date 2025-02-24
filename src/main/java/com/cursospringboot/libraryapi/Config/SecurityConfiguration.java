@@ -4,19 +4,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
+import com.cursospringboot.libraryapi.Security.CustomUserDetailsService;
+import com.cursospringboot.libraryapi.Service.UsuarioService;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfiguration {
 
     @Bean
@@ -37,11 +39,12 @@ public class SecurityConfiguration {
                     // authorize.requestMatchers(HttpMethod.POST, "/livros/**").hasAnyRole("ADMIN");
                     // authorize.requestMatchers(HttpMethod.PUT, "/livros/**").hasAnyRole("ADMIN");
                     // authorize.requestMatchers(HttpMethod.DELETE, "/livros/**").hasAnyRole("ADMIN");
-                    authorize.requestMatchers("/livros/**").hasAnyRole("ADMIN", "USER");
+                    // authorize.requestMatchers("/livros/**").hasAnyRole("ADMIN", "USER");
                     //qualquer requisiçao para essa api o usuario deverá estar autenticado
                     //anyRequst sempre deverá ser a ultima
                     authorize.anyRequest().authenticated();
                 })
+                .oauth2Login(Customizer.withDefaults())
                 .build();
     }
 
@@ -50,20 +53,20 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder(10);
     }
 
-    @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder encoder) {
+    public UserDetailsService userDetailsService (UsuarioService usuarioService ) {//(PasswordEncoder encoder) {
 
-        UserDetails user1 = User.builder()
-                .username("usuario1")
-                .password(encoder.encode("123"))
-                .roles("USER")
-                .build();
+        // UserDetails user1 = User.builder()
+        //         .username("usuario1")
+        //         .password(encoder.encode("123"))
+        //         .roles("USER")
+        //         .build();
 
-        UserDetails user2 = User.builder()
-                .username("usuario2")
-                .password(encoder.encode("321"))
-                .roles("ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(user1, user2);
+        // UserDetails user2 = User.builder()
+        //         .username("usuario2")
+        //         .password(encoder.encode("321"))
+        //         .roles("ADMIN")
+        //         .build();
+        // return new InMemoryUserDetailsManager(user1, user2);
+        return new CustomUserDetailsService(usuarioService);
     }
 }

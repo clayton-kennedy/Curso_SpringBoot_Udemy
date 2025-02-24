@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,8 +38,11 @@ public class AutorController {
     private AutorMapper autorMapper;
 
     @PostMapping
+    @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<?> adicionar(@RequestBody @Valid AutorDTO autorDTO) {
         Autor autor = autorService.adicionar(autorMapper.toEntity(autorDTO));
+        autorService.adicionar(autor);
+
         URI linkAutor = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(autor.getId())
@@ -48,6 +52,7 @@ public class AutorController {
 
     //remover
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<?> remover(@PathVariable String id) {
         autorService.remover(id);
         return ResponseEntity.status(NO_CONTENT).build();
@@ -55,6 +60,7 @@ public class AutorController {
 
     //atualizar
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<?> atualizar(@RequestBody @Valid AutorDTO autorDTO) {
         Optional<Autor> autorEncontrado = autorService.buscarPeloId(autorDTO.id());
         if (!autorEncontrado.isEmpty()) {
@@ -72,6 +78,7 @@ public class AutorController {
 
     //buscar um
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<?> buscarPeloId(@PathVariable String id) {
         return autorService.buscarPeloId(id)
                 .map(autor -> {
@@ -83,6 +90,7 @@ public class AutorController {
 
     //buscar todos
     @GetMapping
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<?> buscarTodos() {
         List<Autor> autores = autorService.buscarTodos();
         List<AutorDTO> autoresDTO = autores.stream()
@@ -93,6 +101,7 @@ public class AutorController {
 
     //buscar pelo nome e nacionalidade
     @GetMapping("/pesquisar")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<List<AutorDTO>> pesquisar(
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "nacionalidade", required = false) String nacionalidade) {

@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.cursospringboot.libraryapi.Model.GeneroLivro;
 import com.cursospringboot.libraryapi.Model.Livro;
+import com.cursospringboot.libraryapi.Model.Usuario;
 import com.cursospringboot.libraryapi.Repository.LivroRepository;
 import com.cursospringboot.libraryapi.Repository.Specs.LivroSpecs;
+import com.cursospringboot.libraryapi.Security.SecurityService;
 import com.cursospringboot.libraryapi.Validator.LivroValidator;
 
 import lombok.RequiredArgsConstructor;
@@ -23,12 +25,16 @@ public class LivroService {
 
     private final LivroRepository livroRepository;
     private final LivroValidator livroValidator;
+    private final SecurityService securityService;
 
     //listar
     public Livro adicionar(Livro livro) {
         if (livro.getId() != null) {
             throw new IllegalArgumentException("Livro já cadastrado!");
         }
+        livroValidator.validar(livro);
+        Usuario usuario = securityService.obteUsuario();
+        livro.setUsuario(usuario);
         return livroRepository.save(livro);
     }
 

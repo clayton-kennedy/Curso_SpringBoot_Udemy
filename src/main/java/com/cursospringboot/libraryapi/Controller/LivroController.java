@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +39,7 @@ public class LivroController {
 
     //listar
     @PostMapping
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<?> adicionar(@RequestBody @Valid CadastroLivroDTO dto) {
         Livro livro = livroMapper.toEntity(dto, autorRepository);
         Livro livroSalvo = livroService.adicionar(livro);
@@ -50,6 +52,7 @@ public class LivroController {
 
     //remover
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<?> remover(@PathVariable String id) {
         return livroService.buscarPeloId(id).map(livro -> {
             livroService.remover(livro);
@@ -59,6 +62,7 @@ public class LivroController {
 
     //atualizar
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<?> atualizar(@PathVariable String id, @RequestBody @Valid CadastroLivroDTO dto) {
         return livroService.buscarPeloId(id).map(livro -> {
             Livro entidadeAux = livroMapper.toEntity(dto, autorRepository);
@@ -76,6 +80,7 @@ public class LivroController {
 
     //buscar um
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<ResultadoPesquisaLivroDTO> buscarPeloId(@PathVariable String id) {
         return livroService.buscarPeloId(id)
                 .map(livro -> {
@@ -86,12 +91,14 @@ public class LivroController {
 
     //buscar todos
     @GetMapping
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public List<Livro> buscarTodos() {
         return livroService.buscarTodos();
     }
 
     //buscar livro e autor
     @GetMapping("/pesquisa")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<Page<ResultadoPesquisaLivroDTO>> pesquisa(
             @RequestParam(value = "isbn", required = false) String isbn,
             @RequestParam(value = "titulo", required = false) String titulo,

@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 import com.cursospringboot.libraryapi.Exception.OperacaoNaoPermitidaException;
 import com.cursospringboot.libraryapi.Exception.RegistroDuplicadoException;
 import com.cursospringboot.libraryapi.Model.Autor;
+import com.cursospringboot.libraryapi.Model.Usuario;
 import com.cursospringboot.libraryapi.Repository.AutorRepository;
 import com.cursospringboot.libraryapi.Repository.LivroRepository;
+import com.cursospringboot.libraryapi.Security.SecurityService;
 import com.cursospringboot.libraryapi.Validator.AutorValidator;
 
 @Service
@@ -24,10 +26,14 @@ public class AutorService {
     private AutorValidator autorValidator;
     @Autowired
     private LivroRepository livroRepository;
+    @Autowired
+    private SecurityService securityService;
 
     //adicionar
     public Autor adicionar(Autor autor) {
             if(autorValidator.existeAutor(autor) == false) {
+                Usuario usuario = securityService.obteUsuario();
+                autor.setUsuario(usuario);
                 return autorRepository.save(autor);
             } else {
                 throw new RegistroDuplicadoException("Autor já cadastrado!");

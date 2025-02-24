@@ -13,6 +13,8 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -41,8 +43,9 @@ public class Autor {
     @LastModifiedDate
     private LocalDate dataAtualizacao;
 
-    @Column(name = "id_usuario", length = 150, nullable = true)
-    private String id_usuario;
+    @ManyToOne
+    @JoinColumn(name = "id_usuario")
+    private Usuario usuario;
 
     @OneToMany (mappedBy = "autor")
     private List<Livro> livros;
@@ -103,20 +106,20 @@ public class Autor {
         this.dataAtualizacao = dataAtualizacao;
     }
 
-    public String getId_usuario() {
-        return id_usuario;
-    }
-
-    public void setId_usuario(String id_usuario) {
-        this.id_usuario = id_usuario;
-    }
-
     public List<Livro> getLivros() {
         return livros;
     }
 
     public void setLivros(List<Livro> livros) {
         this.livros = livros;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
     
 }

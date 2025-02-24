@@ -64,6 +64,10 @@ public class Livro {
     @Column(name = "data_atualizado")
     private LocalDate dataAtualizado;
 
+    @ManyToOne
+    @JoinColumn(name = "id_usuario")
+    private Usuario usuario;
+
     public Livro() {}
 
     public String getId() {
@@ -136,6 +140,14 @@ public class Livro {
 
     public void setDataAtualizado(LocalDate dataAtualizado) {
         this.dataAtualizado = dataAtualizado;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
 
