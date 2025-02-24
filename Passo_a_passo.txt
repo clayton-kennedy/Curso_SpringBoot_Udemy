@@ -136,4 +136,33 @@ e implementar WebMvcConfigurer
 - Criar o mapper do usuario
 - Criar classe de validaçao do usuario
 - Criar o repository, service e controller da entidade Usuario
+- Criar classe SecurityConfiguration e WebConfiguration na pasta Config e configura-localhost
+- Criar pasta Security e a classe CustomUserDetailsService fazendo a implementaçao de UserDetailsService em
+o override em UserDetails, e depois efetuar sua implementaçao
+- No metodo "userDetailsService" da SecurityConfiguration, retornar uma nova CustomUserDetailsService
+- No SecurityConfiguration, adicionar a anotation @EnableMethodSecurity para criar as regras de acesso nos controllers
+- No GlobalExceptionHandler criar metodo de erro para acesso negado, do tipo forbidden
+- Criar classe na pasta security com nome SecurityService @Component
+- Criar metodo para capturar usuario logado que esta captando e utilizar para salvar no controller do autor ou do livro o id_usuario
+- Na entidade Autor, alterar o atributo id_usuario para: tipo Usuario nome: usuario com @ManyToOne e @JoinColumn
+- Adicionar logica nos services de Autor e Livro para setar o id de quem ta criando na tabela
+- Criar autenticaçao atraves do google, primeiro é necessario estar logado em sua conta google
+- Acessar o site cloud.google.com > console > criar projeto > selecionar projeto criado > menu lateral, api e servicos, credenciais > 
+configurar tela de consentimento > user type: externo e criar > nome, dominios autorizados: http://localhost:8084, salvar > ir salvando ate voltar ao painel >
+em credenciais, criar credenciais id do client com auth2 > tipo de aplicativo: web > origines javascript autorizadas: http://localhost:8084 >
+uri de redirecionamento autorizado: http://localhost:8084/login/oauth2/code/google > 
+- Ir ao pom e adicionar a dependencia do oauth2
+- Adicionar no application.properties as credenciais do oauth2
+- Em SecurityConfiguration, adicionar a liberaçao pelo oauth2 do google com .oauth2Login(Customizer.withDefaults())
+- Em LoginViewController, criar nova rota
+- Na pasta security, criar classe CustomAuthentication, implementando Authentication e ao clicar na lampada, importar os métodos
+- Importar e Injetar dependencia para Usuario usuario;
+- No método GrantedAuthority, alterar o retorno para receber a lista de Roles e mapear para o tipo GrantedAuthority usando stream;
+- Alterar os retornos dos métodos
+- Na pasta security, criar classe CustomAuthenticationProvider, implementando AuthenticationProvider, importar os métodos (pela lampada)
+- No método authenticate, criar lógica para capturar login e senhas digitadas, buscar pelo login, verificar se a busca retorna null ou nao,
+conferir se a senha digitada confere com a senhaRegistrada, utilizando o passwordEncoder
+- Configurar o método suport também
+- Retirar o @bean do método userDetailsService dentro da classe SecurityConfiguration
+- Adicionar prefixo "ROLE_" antes de registrar o nome da role, no método getAuthorities na classse CustomAuthentication
 - 
