@@ -165,4 +165,10 @@ conferir se a senha digitada confere com a senhaRegistrada, utilizando o passwor
 - Configurar o método suport também
 - Retirar o @bean do método userDetailsService dentro da classe SecurityConfiguration
 - Adicionar prefixo "ROLE_" antes de registrar o nome da role, no método getAuthorities na classse CustomAuthentication
+- No SecurityService, remover o UserDetails e alterar o corpo da função.
+- Adicionar atributo email na entidade usuario e no DTO
+- No SecurityConfiguration, remover Customizer do oauth2Login e criar a implementação manual
+- Na pasta security, criar classe chamada LoginSocialSucessHandler e extender com SavedRequestAwareAuthenticationSucessHandler
+- Criar override do método onAuthenticationSuccess e criar o corpo do método
+- Na SecurityConfiguration implementar a classe LoginSocialSucessHandler no método securityFilterChain
 - 

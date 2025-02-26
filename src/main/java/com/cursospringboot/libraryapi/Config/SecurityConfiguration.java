@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.cursospringboot.libraryapi.Security.CustomUserDetailsService;
+import com.cursospringboot.libraryapi.Security.LoginSocialSucessHandler;
 import com.cursospringboot.libraryapi.Service.UsuarioService;
 
 @Configuration
@@ -23,7 +24,7 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain //injeção de dependencia
-            (HttpSecurity http) throws Exception {
+            (HttpSecurity http, LoginSocialSucessHandler sucessHandler) throws Exception {
         return http
                 //csrf exige um token de validação em cada requisição POST, PUT, DELETE, etc, impede/permite que paginas de outras aplicaçoes possam enviar requisiçoes para nossa api
                 .csrf(AbstractHttpConfigurer::disable)
@@ -33,7 +34,7 @@ public class SecurityConfiguration {
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/login/**").permitAll();
-                    authorize.requestMatchers(HttpMethod.POST,"/usuarios/**").permitAll();
+                    authorize.requestMatchers(HttpMethod.POST, "/usuarios/**").permitAll();
                     authorize.requestMatchers("/autores/**").hasRole("ADMIN");
                     // authorize.requestMatchers(HttpMethod.GET, "/livros/**").hasAnyRole("ADMIN");
                     // authorize.requestMatchers(HttpMethod.POST, "/livros/**").hasAnyRole("ADMIN");
@@ -44,7 +45,11 @@ public class SecurityConfiguration {
                     //anyRequst sempre deverá ser a ultima
                     authorize.anyRequest().authenticated();
                 })
-                .oauth2Login(Customizer.withDefaults())
+                .oauth2Login(oauth2 -> {
+                    oauth2
+                            .loginPage("/login")
+                            .successHandler(sucessHandler);
+                })
                 .build();
     }
 
@@ -53,14 +58,13 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder(10);
     }
 
-    public UserDetailsService userDetailsService (UsuarioService usuarioService ) {//(PasswordEncoder encoder) {
+    public UserDetailsService userDetailsService(UsuarioService usuarioService) {//(PasswordEncoder encoder) {
 
         // UserDetails user1 = User.builder()
         //         .username("usuario1")
         //         .password(encoder.encode("123"))
         //         .roles("USER")
         //         .build();
-
         // UserDetails user2 = User.builder()
         //         .username("usuario2")
         //         .password(encoder.encode("321"))
