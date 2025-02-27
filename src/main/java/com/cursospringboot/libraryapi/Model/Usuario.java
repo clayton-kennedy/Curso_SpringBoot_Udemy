@@ -17,7 +17,6 @@ import jakarta.validation.constraints.NotNull;
 public class Usuario {
     @Id
     @GeneratedValue (strategy = GenerationType.UUID)
-    @NotNull
     private String id;
     
     @NotNull
